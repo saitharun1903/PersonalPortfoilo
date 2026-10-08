@@ -1,6 +1,45 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+test('touch layouts keep every project reachable on phones and tablets in both orientations', async ({ browser }) => {
+  test.setTimeout(90000);
+  const context = await browser.newContext({ hasTouch: true, isMobile: true });
+  const page = await context.newPage();
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  const baseURL = test.info().project.use.baseURL!;
+  for (const [width, height] of [[390, 844], [667, 375], [768, 1024], [820, 1180], [1024, 768], [1180, 820]]) {
+    await page.setViewportSize({ width, height });
+    await page.goto(baseURL);
+    await page.evaluate(() => document.fonts.ready);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    if (width < 768) {
+      await page.getByRole('button', { name: 'Open menu' }).tap();
+      const menu = page.getByRole('navigation');
+      expect(await menu.evaluate((element) => element.getBoundingClientRect().bottom <= innerHeight)).toBeTruthy();
+      await menu.getByRole('link', { name: 'Contact', exact: true }).tap();
+      await expect(page.getByRole('button', { name: 'Open menu' })).toBeVisible();
+    }
+    for (let index = 0; index < 4; index++) {
+      const panel = page.locator('.stack-panel').nth(index);
+      await panel.evaluate((element) => {
+        const spacer = element.parentElement?.classList.contains('pin-spacer') ? element.parentElement : element;
+        window.scrollTo({ top: spacer!.getBoundingClientRect().top + scrollY, behavior: 'instant' });
+      });
+      await panel.getByRole('button', { name: 'Explore project' }).tap();
+      const dialog = page.getByRole('dialog');
+      await expect(dialog).toBeVisible();
+      expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBeTruthy();
+      await dialog.getByRole('button', { name: 'Close project' }).tap();
+      await expect(dialog).not.toBeVisible();
+    }
+    await page.locator('#contact').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: `test-results/touch-${width}-${height}.png` });
+  }
+  expect(errors).toEqual([]);
+  await context.close();
+});
+
 test('light responsive layouts, images, and contact links', async ({ page }) => {
   test.setTimeout(60000);
   const errors: string[] = [];

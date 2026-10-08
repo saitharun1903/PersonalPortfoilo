@@ -35,10 +35,22 @@ export default function ProjectStack() {
         const element = root.current!;
         const panels = Array.from(element.querySelectorAll<HTMLElement>('.stack-panel'));
         // Native sticky keeps touch scrolling direct. Only overlap cards that fit in full.
-        if (panels.every((panel) => panel.offsetHeight < window.innerHeight - 125)) {
-          element.dataset.mobileStacking = 'true';
-        }
-        return () => { delete element.dataset.mobileStacking; };
+        const updateFit = () => {
+          if (panels.every((panel) => panel.offsetHeight < window.innerHeight - 125)) {
+            element.dataset.mobileStacking = 'true';
+          } else {
+            delete element.dataset.mobileStacking;
+          }
+        };
+        const observer = new ResizeObserver(updateFit);
+        panels.forEach((panel) => observer.observe(panel));
+        window.addEventListener('resize', updateFit);
+        updateFit();
+        return () => {
+          observer.disconnect();
+          window.removeEventListener('resize', updateFit);
+          delete element.dataset.mobileStacking;
+        };
       });
       dispose = () => media.revert();
     }
