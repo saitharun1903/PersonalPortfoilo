@@ -28,7 +28,7 @@ h1 em, h2 em { color: var(--blue); }
 .container { width: min(1200px, calc(100% - 112px)); margin-inline: auto; }
 .blue { color: var(--blue); }
 .navigation { height: 76px; width: min(1280px, calc(100% - 64px)); padding: 0 25px; position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; align-items: center; gap: 35px; background: #fbfdfff0; border: 1px solid #dbe7ef; border-radius: 14px; backdrop-filter: blur(18px); box-shadow: 0 4px 20px #40739a05; }
-.wordmark { font-size: 35px; font-weight: 800; letter-spacing: -2.5px; line-height: 1; }
+.wordmark { font-size: 24px; font-weight: 800; letter-spacing: -1px; line-height: 1.15; }
 .wordmark span { color: #2187c8; }
 .nav-links { display: flex; align-items: center; gap: 26px; margin-left: auto; font-size: 12px; font-weight: 550; }
 .nav-links a { display: inline-flex; align-items: center; gap: 3px; position: relative; min-height: 40px; color: #566d7f; transition: color .2s; }
@@ -261,7 +261,7 @@ footer { padding: 33px 0; display: flex; align-items: center; justify-content: s
   .container { width: calc(100% - 44px); }
   .navigation { height: 66px; top: 12px; width: calc(100% - 28px); gap: 12px; padding: 0 18px; border-radius: 12px; }
   .navigation > .resume-link { margin-left: auto; }
-  .wordmark { font-size: 31px; }
+  .wordmark { font-size: 22px; }
   .menu-toggle { display: block; }
   .nav-links { display: none; }
   .nav-links.open { position: absolute; top: 77px; left: 0; right: 0; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 18px 24px; background: #fbfdff; border: 1px solid #d4e5ef; border-radius: 13px; box-shadow: 0 20px 40px #31658a18; }
@@ -412,4 +412,20 @@ footer { padding: 33px 0; display: flex; align-items: center; justify-content: s
 @media (max-width: 767px) {
   .project-dialog { padding: 44px 24px 28px; }
   .project-dialog h2 { font-size: 36px; overflow-wrap: anywhere; }
+}
+
+@media (max-width: 1100px) {
+  .navigation { gap: 12px; padding-inline: 18px; }
+  .navigation > .resume-link { margin-left: auto; }
+  .menu-toggle { display: block; flex-shrink: 0; }
+  .nav-links { display: none; }
+  .nav-links.open { position: absolute; top: calc(100% + 11px); left: 0; right: 0; display: flex; flex-direction: column; align-items: stretch; gap: 0; margin: 0; padding: 18px 24px; background: #fbfdff; border: 1px solid #d4e5ef; border-radius: 13px; box-shadow: 0 20px 40px #31658a18; max-height: calc(100dvh - 125px); overflow-y: auto; overscroll-behavior: contain; }
+  .nav-links.open a { font-size: 16px; padding-block: 13px; flex-shrink: 0; }
+  .nav-links.open a::after { display: none; }
+}
+
+@media (max-width: 480px) {
+  .navigation { padding-inline: 12px; gap: 8px; }
+  .navigation .wordmark { font-size: 18px; letter-spacing: -.5px; max-width: 145px; }
+  .navigation .resume-link { padding-inline: 10px; gap: 8px; font-size: 11px; }
 }

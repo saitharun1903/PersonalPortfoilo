@@ -21,7 +21,7 @@ export function Navigation() {
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
   return <header className="navigation">
-    <a className="wordmark" href="#home" aria-label="Sai Tharun home">sai<span>.</span></a>
+    <a className="wordmark" href="#home" aria-label="Sai Tharun Reddy home">Sai Tharun Reddy<span>.</span></a>
     <nav id="main-navigation" aria-label="Main navigation" className={open ? 'nav-links open' : 'nav-links'}>
       {['About', 'Projects', 'Experience', 'Skills'].map((label) => <a key={label} href={`#${label.toLowerCase()}`} aria-current={active === label.toLowerCase() ? 'location' : undefined} onClick={() => setOpen(false)}>{label}</a>)}
       <a href={profile.github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={12} /></a>
