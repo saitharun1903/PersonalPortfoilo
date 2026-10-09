@@ -1,5 +1,35 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { contentSchema } from '../lib/content-schema';
+import { defaultContent } from '../data/default-content';
+
+test('content validation rejects executable links and supports empty collections', () => {
+  const valid = structuredClone(defaultContent);
+  valid.certifications = [];
+  valid.projects = [];
+  expect(contentSchema.safeParse(valid).success).toBeTruthy();
+  valid.profile.github = 'javascript:alert(1)';
+  expect(contentSchema.safeParse(valid).success).toBeFalsy();
+  valid.profile.github = 'https://github.com/saitharun1903';
+  valid.profile.portrait = '//untrusted.test/picture';
+  expect(contentSchema.safeParse(valid).success).toBeFalsy();
+});
+
+test('certifications adapt to mobile and admin stays private', async ({ page }) => {
+  for (const width of [390, 820, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto('/');
+    await expect(page.locator('.certificate-card')).toHaveCount(4);
+    await page.locator('#certifications').scrollIntoViewIfNeeded();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    await page.screenshot({ path: `test-results/certifications-${width}.png`, animations: 'disabled' });
+  }
+  await page.goto('/admin');
+  await expect(page.getByRole('button', { name: 'Publish changes', exact: true })).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/Welcome back|Connect your portfolio/);
+  await page.screenshot({ path: 'test-results/admin-login.png' });
+});
 
 test('touch layouts keep every project reachable on phones and tablets in both orientations', async ({ browser }) => {
   test.setTimeout(90000);

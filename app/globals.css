@@ -429,3 +429,44 @@ footer { padding: 33px 0; display: flex; align-items: center; justify-content: s
   .navigation .wordmark { font-size: 18px; letter-spacing: -.5px; max-width: 145px; }
   .navigation .resume-link { padding-inline: 10px; gap: 8px; font-size: 11px; }
 }
+
+/* Credentials: a paper preview with a lifted sky-blue frame. */
+.certifications { padding-bottom: 130px; }
+.certificate-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; margin-top: 45px; }
+.certificate-card { border: 1px solid #ccdfec; border-radius: 22px; background: #fff; overflow: hidden; transition: transform .4s, box-shadow .4s, border-color .4s; }
+.certificate-cover { padding: 34px; aspect-ratio: 1.5; background: #e5f4ff; position: relative; display: grid; place-items: center; overflow: hidden; }
+.certificate-card:nth-child(even) .certificate-cover { background: #edf5fa; }
+.certificate-cover img { width: 100%; height: 100%; object-fit: contain; min-height: 0; filter: drop-shadow(0 10px 12px #3a698522); }
+.certificate-paper { background: #fbfdff; border: 1px solid #bbd3e2; padding: 24px 30px; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; box-shadow: 0 12px 20px #38668712; transform: rotate(-3deg); transition: transform .5s; }
+.certificate-paper > span { font-size: 10px; color: #526e81; }
+.certificate-paper svg { color: #3582af; }
+.certificate-paper > p { font-family: var(--font-serif), Georgia, serif; font-size: 23px; line-height: 1.2; }
+.certificate-rule { height: 1px; width: 40%; background: #b5d0e1; }
+.certificate-paper small { font-size: 9px; color: #526e81; }
+.certificate-number { position: absolute; right: 17px; top: 16px; font-size: 11px; color: #437391; }
+.certificate-copy { padding: 30px; }
+.certificate-copy .certificate-issuer { color: #126da7; font-size: 11px; margin-bottom: 12px; }
+.certificate-copy h3 { font-size: 25px; line-height: 1.25; margin-bottom: 13px; }
+.certificate-copy > p { font-size: 12px; color: #587184; }
+.certificate-copy .certificate-date { margin-bottom: 10px; font-size: 11px; }
+.certificate-actions { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 18px; }
+.custom-project-cover { padding: 35px; min-height: 280px; display: grid; align-content: center; gap: 20px; color: #286487; }
+.custom-project-cover p { font-size: 36px; line-height: 1.2; overflow-wrap: anywhere; }
+.custom-project-cover span { font-size: 12px; }
+.project-copy, .hero-copy { min-width: 0; }
+.project-copy h3, .email-address, .hero h1, .repo h3, .footer-name { overflow-wrap: anywhere; }
+.hero-actions, .contact-actions { flex-wrap: wrap; }
+.portrait-note { max-width: 180px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .certificate-card:hover, .certificate-card:focus-within { transform: translateY(-7px); box-shadow: 0 23px 45px -18px #397aa03b; border-color: #8fbfdb; }
+  .certificate-card:hover .certificate-paper { transform: rotate(0) scale(1.025); }
+}
+@media (max-width: 767px) {
+  .certifications { padding-bottom: 85px; }
+  .certificate-grid { grid-template-columns: 1fr; gap: 22px; margin-top: 30px; }
+  .certificate-cover { padding: 27px; }
+  .certificate-copy { padding: 25px; }
+  .certificate-paper { gap: 10px; padding: 18px; }
+  .certificate-paper > p { font-size: 21px; }
+  .certificate-paper svg { width: 32px; height: 32px; }
+}

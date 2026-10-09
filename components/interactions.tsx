@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Check, Copy, Download, Menu, X } from 'lucide-react';
-import { profile, projects } from '../data/portfolio';
+import type { PortfolioContent, Project } from '../lib/content-schema';
 
-export function Navigation() {
+export function Navigation({ profile, sections }: { profile: PortfolioContent['profile']; sections: PortfolioContent['sections'] }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('');
   const toggle = useRef<HTMLButtonElement>(null);
@@ -21,19 +21,19 @@ export function Navigation() {
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
   return <header className="navigation">
-    <a className="wordmark" href="#home" aria-label="Sai Tharun Reddy home">Sai Tharun Reddy<span>.</span></a>
+    <a className="wordmark" href="#home" aria-label={`${profile.brand} home`}>{profile.brand}<span>.</span></a>
     <nav id="main-navigation" aria-label="Main navigation" className={open ? 'nav-links open' : 'nav-links'}>
-      {['About', 'Projects', 'Experience', 'Skills'].map((label) => <a key={label} href={`#${label.toLowerCase()}`} aria-current={active === label.toLowerCase() ? 'location' : undefined} onClick={() => setOpen(false)}>{label}</a>)}
-      <a href={profile.github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={12} /></a>
+      {(['About', 'Projects', 'Experience', 'Skills', 'Certifications'] as const).filter(label => sections[label.toLowerCase() as keyof typeof sections]).map((label) => <a key={label} href={`#${label.toLowerCase()}`} aria-current={active === label.toLowerCase() ? 'location' : undefined} onClick={() => setOpen(false)}>{label}</a>)}
       <a href="#contact" aria-current={active === 'contact' ? 'location' : undefined} onClick={() => setOpen(false)}>Contact</a>
     </nav>
-    <ResumeButton compact />
+    <ResumeButton compact href={profile.resume} />
     <button ref={toggle} className="menu-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
   </header>;
 }
 
-export function ResumeButton({ compact = false }: { compact?: boolean }) {
-  return <a className={compact ? 'resume-link' : 'button secondary'} href="/resume" download="Sai-Tharun-Reddy-Resume.pdf">{compact ? 'Resume' : 'Download Resume'}<Download size={16} /></a>;
+export function ResumeButton({ compact = false, href = '/resume' }: { compact?: boolean; href?: string }) {
+  if (!href) return null;
+  return <a className={compact ? 'resume-link' : 'button secondary'} href={href} download="Sai-Tharun-Reddy-Resume.pdf" target={href.startsWith('https:') ? '_blank' : undefined} rel="noreferrer">{compact ? 'Resume' : 'Download Resume'}<Download size={16} /></a>;
 }
 
 export function RevealObserver() {
@@ -53,9 +53,8 @@ export function RevealObserver() {
   return null;
 }
 
-export function ProjectDetails({ index }: { index: number }) {
+export function ProjectDetails({ index, project, email }: { index: number; project: Project; email: string }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const project = projects[index];
   return <>
     <button className="text-link" onClick={() => ref.current?.showModal()}>Explore project <ArrowUpRight size={18} /></button>
     <dialog ref={ref} className="project-dialog" aria-labelledby={`dialog-title-${index}`} onClick={(event) => { if (event.target === ref.current) ref.current.close(); }}>
@@ -65,19 +64,19 @@ export function ProjectDetails({ index }: { index: number }) {
       <div className="tags">{project.stack.map((technology) => <span key={technology}>{technology}</span>)}</div>
       <div className="dialog-actions">
         {project.live && <a className="button primary" href={project.live} target="_blank" rel="noreferrer">Visit website <ArrowUpRight size={16} /></a>}
-        {project.github ? <a className="text-link" href={project.github} target="_blank" rel="noreferrer">View repository <ArrowUpRight size={16} /></a> : <a className="text-link" href={`mailto:${profile.email}?subject=${encodeURIComponent(project.title + ' project enquiry')}`}>Ask me about it <ArrowUpRight size={16} /></a>}
+        {project.github ? <a className="text-link" href={project.github} target="_blank" rel="noreferrer">View repository <ArrowUpRight size={16} /></a> : <a className="text-link" href={`mailto:${email}?subject=${encodeURIComponent(project.title + ' project enquiry')}`}>Ask me about it <ArrowUpRight size={16} /></a>}
       </div>
     </dialog>
   </>;
 }
 
-export function CopyEmail() {
+export function CopyEmail({ email }: { email: string }) {
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (timeout.current) clearTimeout(timeout.current); }, []);
   return <button className="copy-email" onClick={async () => {
-    try { await navigator.clipboard.writeText(profile.email); setCopied(true); if (timeout.current) clearTimeout(timeout.current); timeout.current = setTimeout(() => setCopied(false), 2500); }
+    try { await navigator.clipboard.writeText(email); setCopied(true); if (timeout.current) clearTimeout(timeout.current); timeout.current = setTimeout(() => setCopied(false), 2500); }
     catch { setFailed(true); }
-  }}>{copied ? <Check size={16} /> : <Copy size={16} />}<span aria-live="polite">{copied ? 'Copied' : failed ? profile.email : 'Copy email'}</span></button>;
+  }}>{copied ? <Check size={16} /> : <Copy size={16} />}<span aria-live="polite">{copied ? 'Copied' : failed ? email : 'Copy email'}</span></button>;
 }

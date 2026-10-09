@@ -23,10 +23,11 @@ npm run test:production
 
 ## Update
 
-- Edit `data/portfolio.ts` for contact details, skills, and project content.
-- Replace `public/resume.pdf` to update the downloaded resume. The `/resume` route serves the actual PDF with a download filename. Keep this file present when deploying.
+- Open `/admin` to manage content, reorder or remove cards, upload files, and publish to Supabase. See [ADMIN-SETUP.md](ADMIN-SETUP.md) for owner setup and Vercel environment variables.
+- `data/default-content.ts` provides initial content before the first publish and a fallback during a database outage. The four certification cards are explicitly marked samples for the owner to replace.
+- Upload a new resume from Profile & contact in admin. The bundled `/resume` route remains the initial download.
 - Canonical metadata, robots, and sitemap default to `https://saitharunreddy.me`. Set `NEXT_PUBLIC_SITE_URL` only to override this domain.
-- GitHub data refreshes on the server hourly and falls back to direct repository links on failure. No token required.
+- GitHub links and their descriptions are editable in admin. Published content is read on every public page request, with no redeployment required.
 
 ## Content sources and remaining assets
 
@@ -41,7 +42,7 @@ Mentivox and Gym Nexus have typographic covers, with no invented product screens
 ## Deploy to Vercel
 
 1. Import `saitharun1903/PersonalPortfoilo` from GitHub into Vercel.
-2. Use the Next.js preset, repository root, Node.js 24, and default build/output settings. No secrets are required.
+2. Use the Next.js preset, repository root, Node.js 24, and default build/output settings. Add the Supabase URL and publishable key from ADMIN-SETUP.md to enable the admin.
 3. Deploy, then test the generated Vercel URL, including `/resume` and the scrolling project cards.
 4. In project Settings → Domains, add `saitharunreddy.me` and `www.saitharunreddy.me`. Make the apex domain primary and redirect www to it.
 5. In Namecheap → Domain List → Manage → Advanced DNS, use the exact A and CNAME values displayed by Vercel. Replace conflicting parking or redirect records for `@` and `www`; preserve email and unrelated records.
