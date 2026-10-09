@@ -53,3 +53,19 @@
 .media-list a { flex: 1; overflow-wrap: anywhere; font-size: 12px; }
 @media (max-width: 900px) { .admin-shell { grid-template-columns: 1fr; } .admin-sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 22px; } .admin-sidebar nav { display: flex; overflow-x: auto; margin-bottom: 10px; } .admin-sidebar nav button { white-space: nowrap; gap: 12px; } .admin-sidebar > .section-label { margin-top: 20px; } .admin-sidebar > .text-link, .admin-sidebar form { display: inline-flex; margin-right: 25px; } }
 @media (max-width: 600px) { .admin-topbar { align-items: flex-start; flex-direction: column; } .admin-topbar h1 { font-size: 32px; } .admin-fields { grid-template-columns: 1fr; } .item-body { padding: 16px; } .login-card { padding: 25px; } .admin-workspace { padding-inline: 18px; } }
+
+/* Match the site's reading scale and keep fields within their grid tracks. */
+.admin-workspace { margin-inline: auto; min-width: 0; }
+.admin-field, .admin-topbar > div, .collection-heading > div { min-width: 0; }
+.admin-field input, .admin-field textarea, .admin-field select { max-width: 100%; }
+.admin-topbar h1 { font-size: 32px; line-height: 1.25; }
+.login-card { background: var(--sky-soft); border-radius: 16px; }
+.login-card h1 { font-size: 34px; line-height: 1.2; }
+.login-card h1 em { font-family: inherit; font-style: normal; font-weight: inherit; }
+.admin-status, .admin-error, .admin-hint { overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .admin-login { margin-block: 32px; }
+  .admin-topbar h1, .login-card h1 { font-size: 28px; }
+  .collection-heading { flex-wrap: wrap; }
+  .admin-workspace { padding-top: 28px; }
+}
