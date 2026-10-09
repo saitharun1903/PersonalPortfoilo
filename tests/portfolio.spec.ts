@@ -78,7 +78,7 @@ test('light responsive layouts, images, and contact links', async ({ page }) => 
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Hi, I’m Sai.');
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(251, 253, 255)');
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await expect(page.getByRole('link', { name: 'Email Me', exact: true })).toHaveAttribute('href', 'mailto:saitharunreddy@writecode.in');
     await page.screenshot({ path: `test-results/hero-${width}.png`, animations: 'disabled' });

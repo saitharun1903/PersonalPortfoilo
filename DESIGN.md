@@ -1,6 +1,6 @@
 # Portfolio design direction
 
-Personal developer portfolio for recruiters and engineers. Light editorial composition, white surfaces and sky blue, with specific project writing and real assets.
+Personal developer portfolio for recruiters and engineers. Light editorial composition, clean white surfaces, deeper sky-blue accents, and navy text, with specific project writing and real assets. Shared CSS tokens keep the public site and admin consistent: white #ffffff, navy #102d43, muted text #405d72, primary blue #0076b8, pale sky #d6efff, and stronger card surfaces #b2e1ff.
 
 Layout variance 7, motion 6, density 3. Native CSS in the existing Next.js application. Manrope for sans-serif text, Lora italic for a limited personal accent. No dark section inversions, AI badges, mock metrics, or simulated product screenshots.
 
