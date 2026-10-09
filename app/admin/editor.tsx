@@ -7,7 +7,7 @@ import { createUpload, deleteFile, listFiles, saveContent, signOut } from './act
 
 const UploadBusy = createContext<(busy: boolean) => void>(() => {});
 type Value = string | boolean | Value[] | { [key: string]: Value };
-const labels: Record<string, string> = { copy: 'Page text & SEO', about: 'About paragraphs', profile: 'Profile & contact', sections: 'Section visibility', certifications: 'Certifications', repositories: 'GitHub links', imageAlt: 'Image description', pdf: 'Certificate PDF', verification: 'Verification URL', resume: 'Resume PDF', portrait: 'Profile photo', image: 'Cover image', seoTitle: 'Search title', seoDescription: 'Search description', live: 'Live website URL', github: 'GitHub URL', linkedin: 'LinkedIn URL' };
+const labels: Record<string, string> = { brand: 'Display name', headline: 'LinkedIn headline', heroIntro: 'Intro greeting', copy: 'Page text & SEO', about: 'About paragraphs', profile: 'Profile & contact', sections: 'Section visibility', certifications: 'Certifications', repositories: 'GitHub links', imageAlt: 'Image description', pdf: 'Certificate PDF', verification: 'Verification URL', resume: 'Resume PDF', portrait: 'Profile photo', image: 'Cover image', seoTitle: 'Search title', seoDescription: 'Search description', live: 'Live website URL', github: 'GitHub URL', linkedin: 'LinkedIn URL' };
 const label = (key: string) => labels[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, char => char.toUpperCase());
 const templates: Record<string, Value> = {
   projects: { title: 'New project', category: 'Project', description: '', detail: '', stack: [], github: '', live: '', image: '', imageAlt: '', highlights: [], color: 'blue' },

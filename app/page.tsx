@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { ArrowDown, ArrowUpRight, ArrowRight, ArrowUp, Braces, Code2, Database, GraduationCap, Laptop, Mail, MapPin, Wrench } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, ArrowRight, ArrowUp, Braces, Database, GraduationCap, Laptop, Mail, MapPin, Wrench } from 'lucide-react';
 import { CopyEmail, Navigation, ResumeButton, RevealObserver } from '../components/interactions';
 import ProjectStack from '../components/project-stack';
 import Certifications from '../components/certifications';
@@ -13,15 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 export default async function Home() {
   const { profile, copy, sections, about, projects, skills, experience, certifications, repositories } = await getContent();
+  const nameParts = profile.brand.trim().split(/\s+/);
+  const surname = nameParts.pop();
   return <>
     <a className="skip-link" href="#main">Skip to content</a><Navigation profile={profile} sections={sections} />
     <main id="main">
       <section className="hero container" id="home">
-        <div className="hero-copy"><p className="hero-introduction">{profile.name}</p><h1>Hi, I’m <em>{profile.firstName}.</em><br/>{copy.hero}<span className="blue">.</span></h1><p className="hero-description">{copy.heroDescription}</p>
+        <div className="hero-copy"><p className="hero-introduction">{copy.heroIntro}</p><h1 className="hero-name">{nameParts.length > 0 && <span>{nameParts.join(' ')}</span>}<em>{surname}.</em></h1><p className="hero-description hero-headline">{profile.headline}</p>
           <div className="hero-actions">{sections.projects && projects.length > 0 && <a className="button primary" href="#projects">View My Work <ArrowDown size={17} /></a>}<ResumeButton href={profile.resume}/></div>
           <div className="hero-socials">{profile.github && <a href={profile.github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={14} /></a>}{profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={14} /></a>}<a href={`mailto:${profile.email}`}>Email <ArrowUpRight size={14} /></a></div>
         </div>
-        <div className="hero-portrait"><div className="portrait-backdrop" aria-hidden="true" /><div className="portrait-card">{profile.portrait && <Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 767px) 75vw, 350px" />}<div className="portrait-caption"><span>{profile.brand}</span><span>{profile.caption}</span></div></div><div className="code-stamp" aria-hidden="true"><Code2 size={34} strokeWidth={1.7} /></div><div className="portrait-note">{profile.note}</div></div>
+        <div className="hero-portrait"><div className="portrait-backdrop" aria-hidden="true" /><div className="portrait-card">{profile.portrait && <Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 767px) 75vw, 350px" />}<div className="portrait-caption"><span>{profile.brand}</span><span>{profile.caption}</span></div></div><div className="portrait-note">{profile.note}</div></div>
       </section>
       {sections.projects && <section className="projects" id="projects"><div className="section-heading container reveal"><p className="section-label">{copy.projectsLabel}</p><h2>{copy.projectsTitle}<br/><em>{copy.projectsAccent}</em></h2><p>{copy.projectsDescription}</p></div>{projects.length > 0 && <ProjectStack projects={projects} email={profile.email}/>}</section>}
       {sections.about && <section className="about container reveal" id="about"><div className="about-heading"><p className="section-label">{copy.aboutLabel}</p><h2>{copy.aboutTitle} <em>{copy.aboutAccent}</em></h2></div><div className="about-content">{about.map((paragraph, index) => <p key={index}>{paragraph}</p>)}<div className="about-footnotes"><span><MapPin size={16} />{profile.location}</span><span><GraduationCap size={18} />{profile.qualification}</span></div></div></section>}

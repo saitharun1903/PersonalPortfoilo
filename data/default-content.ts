@@ -2,9 +2,9 @@ import { profile, projects, skills, repositoryDescriptions } from './portfolio';
 import type { PortfolioContent } from '../lib/content-schema';
 
 export const defaultContent: PortfolioContent = {
-  profile: { ...profile, brand: 'Sai Tharun Reddy', firstName: 'Sai', portrait: '/images/sai-tharun.webp', resume: '/resume', caption: 'Nice to meet you.', note: 'Java & Spring Boot.', location: 'Based in India', qualification: 'Computer Science & Engineering', institution: 'Malla Reddy University Hyderabad', jobTitle: 'Backend Developer' },
+  profile: { ...profile, brand: 'Sai Tharun Reddy', headline: 'Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student', portrait: '/images/sai-tharun.webp', resume: '/resume', caption: 'Nice to meet you.', note: 'Java & Spring Boot.', location: 'Based in India', qualification: 'Computer Science & Engineering', institution: 'Malla Reddy University Hyderabad', jobTitle: 'Backend Developer' },
   copy: {
-    hero: 'I build software', heroDescription: 'A Computer Science student focused on Java, Spring Boot, and the backend behind useful web applications.',
+    heroIntro: 'Hello, I’m',
     projectsLabel: 'Selected projects', projectsTitle: 'A few things I’ve', projectsAccent: 'worked on.', projectsDescription: 'From browser tools to Java applications. Here’s a closer look.',
     aboutLabel: 'A little about me', aboutTitle: 'I like knowing how things', aboutAccent: 'work.',
     skillsTitle: 'What I', skillsAccent: 'work with.', skillsDescription: 'My main focus is Java and backend development.',

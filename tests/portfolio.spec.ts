@@ -77,7 +77,9 @@ test('light responsive layouts, images, and contact links', async ({ page }) => 
   for (const width of [1440, 1280, 1024, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Hi, I’m Sai.');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Sai Tharun');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Reddy');
+    await expect(page.locator('.hero-headline')).toHaveText('Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student');
     await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await expect(page.getByRole('link', { name: 'Email Me', exact: true })).toHaveAttribute('href', 'mailto:saitharunreddy@writecode.in');
@@ -87,7 +89,7 @@ test('light responsive layouts, images, and contact links', async ({ page }) => 
     expect(await page.locator('img').evaluateAll((images) => images.every((image) => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0))).toBeTruthy();
   }
   expect(errors).toEqual([]);
-  await expect(page.locator('main')).not.toContainText('AI/ML');
+  await expect(page.locator('.hero')).not.toContainText('I build software');
   await expect(page.locator('main')).not.toContainText('Built with intent');
 });
 

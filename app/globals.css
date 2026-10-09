@@ -462,6 +462,13 @@ footer { padding: 33px 0; display: flex; align-items: center; justify-content: s
 .project-copy h3, .email-address, .hero h1, .repo h3, .footer-name { overflow-wrap: anywhere; }
 .hero-actions, .contact-actions { flex-wrap: wrap; }
 .portrait-note { max-width: 180px; }
+.hero-name > span, .hero-name > em { display: block; }
+.hero h1.hero-name { line-height: 1.04; letter-spacing: -.055em; }
+.hero h1.hero-name em { font-size: 1.1em; }
+.hero .hero-headline { max-width: 540px; font-size: 16px; line-height: 1.85; text-wrap: pretty; }
+@media (max-width: 767px) {
+  .hero .hero-headline { font-size: 14px; max-width: 440px; }
+}
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .certificate-card:hover, .certificate-card:focus-within { transform: translateY(-7px); box-shadow: 0 23px 45px -18px #0759853b; border-color: var(--sky-strong); }
   .certificate-card:hover .certificate-paper { transform: rotate(0) scale(1.025); }
