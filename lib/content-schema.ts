@@ -15,7 +15,7 @@ export const projectSchema = z.object({
 });
 export const certificateSchema = z.object({ title: short, issuer: short, date: text, description: text, image: asset, pdf: asset, verification: link });
 export const contentSchema = z.object({
-  profile: z.object({ name: short, brand: short, headline: text.default('Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student'), email: z.email(), github: link, linkedin: link, portrait: asset, resume: asset, caption: text, note: text, location: text, qualification: text, institution: text, jobTitle: text }),
+  profile: z.object({ name: short, brand: short, headline: text.default('Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student'), email: z.email(), github: link, linkedin: link, leetcode: link.default('https://leetcode.com/u/koppulasaitharunreddy/'), portrait: asset, resume: asset, caption: text, note: text, location: text, qualification: text, institution: text, jobTitle: text }),
   copy: z.object({ heroIntro: text.default('Hello, I’m'), projectsLabel: text, projectsTitle: text, projectsAccent: text, projectsDescription: text, aboutLabel: text, aboutTitle: text, aboutAccent: text, skillsTitle: text, skillsAccent: text, skillsDescription: text, experienceTitle: text, experienceAccent: text, certificatesLabel: text, certificatesTitle: text, certificatesAccent: text, certificatesDescription: text, githubTitle: text, githubAccent: text, contactPrompt: text, contactTitle: text, contactAccent: text, seoTitle: short, seoDescription: text }),
   about: z.array(text).max(20),
   projects: z.array(projectSchema).max(40),

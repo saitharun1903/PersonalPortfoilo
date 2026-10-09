@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUpRight, ArrowRight, ArrowUp, Braces, Database, Graduat
 import { CopyEmail, Navigation, ResumeButton } from '../components/interactions';
 import ProjectStack from '../components/project-stack';
 import Certifications from '../components/certifications';
+import SocialLinks from '../components/social-links';
 import { getContent } from '../lib/content';
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,7 @@ export default async function Home() {
       <section className="hero container" id="home">
         <div className="hero-copy"><p className="hero-introduction">{profile.note} <span>/ {profile.jobTitle}</span></p><h1 className="hero-name">{nameParts.length > 0 && <span>{nameParts.join(' ')}</span>}<em>{surname}.</em></h1><p className="hero-description hero-headline">{profile.headline}</p>
           <div className="hero-actions">{sections.projects && projects.length > 0 && <a className="button primary" href="#projects">View My Work <ArrowDown size={17} /></a>}<ResumeButton href={profile.resume}/></div>
-          <div className="hero-socials">{profile.github && <a href={profile.github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={14} /></a>}{profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={14} /></a>}<a href={`mailto:${profile.email}`}>Email <ArrowUpRight size={14} /></a></div>
+          <SocialLinks profile={profile}/>
         </div>
         <aside className="hero-portrait"><div className="portrait-card">{profile.portrait && <Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 767px) 96px, 260px" />}</div><div className="hero-credentials"><p>{profile.qualification}</p><span>{profile.institution}</span><span><MapPin size={13}/>{profile.location}</span></div></aside>
       </section>

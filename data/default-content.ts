@@ -2,7 +2,7 @@ import { profile, projects, skills, repositoryDescriptions } from './portfolio';
 import type { PortfolioContent } from '../lib/content-schema';
 
 export const defaultContent: PortfolioContent = {
-  profile: { ...profile, brand: 'Sai Tharun Reddy', headline: 'Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student', portrait: '/images/sai-tharun.webp', resume: '/resume', caption: 'Nice to meet you.', note: 'Java & Spring Boot.', location: 'Based in India', qualification: 'Computer Science & Engineering', institution: 'Malla Reddy University Hyderabad', jobTitle: 'Backend Developer' },
+  profile: { ...profile, leetcode: 'https://leetcode.com/u/koppulasaitharunreddy/', brand: 'Sai Tharun Reddy', headline: 'Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student', portrait: '/images/sai-tharun.webp', resume: '/resume', caption: 'Nice to meet you.', note: 'Java & Spring Boot.', location: 'Based in India', qualification: 'Computer Science & Engineering', institution: 'Malla Reddy University Hyderabad', jobTitle: 'Backend Developer' },
   copy: {
     heroIntro: 'Hello, I’m',
     projectsLabel: 'Project portfolio', projectsTitle: 'Selected', projectsAccent: 'projects.', projectsDescription: 'Working applications, implementation details, and links to explore the work.',

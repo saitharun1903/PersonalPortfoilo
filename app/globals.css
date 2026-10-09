@@ -593,3 +593,7 @@ footer { padding-block: 30px; }
   .project-art .project-screenshot { max-height: 180px; object-fit: cover; object-position: top; }
   .project-art .screenshot-link { max-height: 204px; }
 }
+.social-icons { gap: 14px; }
+.hero-socials.social-icons a { width: 46px; height: 46px; padding: 10px; justify-content: center; border: 1px solid var(--line); border-radius: 9px; color: var(--text); transition: color .18s, background .18s, border-color .18s; }
+.hero-socials.social-icons a:hover { color: var(--blue-deep); background: var(--sky-soft); border-color: var(--blue); }
+.social-icons svg { width: 25px; height: 25px; flex-shrink: 0; }
