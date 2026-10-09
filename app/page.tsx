@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { ArrowDown, ArrowUpRight, ArrowRight, ArrowUp, Braces, Database, GraduationCap, Laptop, Mail, MapPin, Wrench } from 'lucide-react';
-import { CopyEmail, Navigation, ResumeButton, RevealObserver } from '../components/interactions';
+import { CopyEmail, Navigation, ResumeButton } from '../components/interactions';
 import ProjectStack from '../components/project-stack';
 import Certifications from '../components/certifications';
 import { getContent } from '../lib/content';
@@ -17,13 +17,13 @@ export default async function Home() {
   const surname = nameParts.pop();
   return <>
     <a className="skip-link" href="#main">Skip to content</a><Navigation profile={profile} sections={sections} />
-    <main id="main">
+    <main id="main" className="recruiter-portfolio">
       <section className="hero container" id="home">
-        <div className="hero-copy"><p className="hero-introduction">{copy.heroIntro}</p><h1 className="hero-name">{nameParts.length > 0 && <span>{nameParts.join(' ')}</span>}<em>{surname}.</em></h1><p className="hero-description hero-headline">{profile.headline}</p>
+        <div className="hero-copy"><p className="hero-introduction">{profile.note} <span>/ {profile.jobTitle}</span></p><h1 className="hero-name">{nameParts.length > 0 && <span>{nameParts.join(' ')}</span>}<em>{surname}.</em></h1><p className="hero-description hero-headline">{profile.headline}</p>
           <div className="hero-actions">{sections.projects && projects.length > 0 && <a className="button primary" href="#projects">View My Work <ArrowDown size={17} /></a>}<ResumeButton href={profile.resume}/></div>
           <div className="hero-socials">{profile.github && <a href={profile.github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={14} /></a>}{profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={14} /></a>}<a href={`mailto:${profile.email}`}>Email <ArrowUpRight size={14} /></a></div>
         </div>
-        <div className="hero-portrait"><div className="portrait-backdrop" aria-hidden="true" /><div className="portrait-card">{profile.portrait && <Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 767px) 75vw, 350px" />}<div className="portrait-caption"><span>{profile.brand}</span><span>{profile.caption}</span></div></div><div className="portrait-note">{profile.note}</div></div>
+        <aside className="hero-portrait"><div className="portrait-card">{profile.portrait && <Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 767px) 96px, 260px" />}</div><div className="hero-credentials"><p>{profile.qualification}</p><span>{profile.institution}</span><span><MapPin size={13}/>{profile.location}</span></div></aside>
       </section>
       {sections.projects && <section className="projects" id="projects"><div className="section-heading container reveal"><p className="section-label">{copy.projectsLabel}</p><h2>{copy.projectsTitle}<br/><em>{copy.projectsAccent}</em></h2><p>{copy.projectsDescription}</p></div>{projects.length > 0 && <ProjectStack projects={projects} email={profile.email}/>}</section>}
       {sections.about && <section className="about container reveal" id="about"><div className="about-heading"><p className="section-label">{copy.aboutLabel}</p><h2>{copy.aboutTitle} <em>{copy.aboutAccent}</em></h2></div><div className="about-content">{about.map((paragraph, index) => <p key={index}>{paragraph}</p>)}<div className="about-footnotes"><span><MapPin size={16} />{profile.location}</span><span><GraduationCap size={18} />{profile.qualification}</span></div></div></section>}
@@ -34,6 +34,6 @@ export default async function Home() {
       <section className="contact-section" id="contact"><div className="contact container reveal"><div className="contact-top"><Mail size={24} strokeWidth={1.5}/><span>{copy.contactPrompt}</span></div><h2>{copy.contactTitle} <em>{copy.contactAccent}</em><ArrowUpRight aria-hidden="true" /></h2><div className="contact-bottom"><div><a className="email-address" href={`mailto:${profile.email}`}>{profile.email}<ArrowRight size={20}/></a><CopyEmail email={profile.email}/></div><div className="contact-actions"><a className="button primary" href={`mailto:${profile.email}`}>Email Me <ArrowUpRight size={17}/></a><ResumeButton href={profile.resume}/></div></div></div></section>
     </main>
     <footer className="container"><div className="footer-name"><a className="wordmark" href="#home">{profile.brand}<span>.</span></a><span>© {new Date().getFullYear()} {profile.name}</span></div><div className="footer-links">{profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={13}/></a>}{profile.github && <a href={profile.github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={13}/></a>}<a href="#home" aria-label="Back to top"><ArrowUp size={19}/></a></div></footer>
-    <RevealObserver/><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: profile.name, jobTitle: profile.jobTitle, sameAs: [profile.github, profile.linkedin].filter(Boolean), alumniOf: { '@type': 'CollegeOrUniversity', name: profile.institution } }).replace(/</g, '\\u003c') }}/>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: profile.name, jobTitle: profile.jobTitle, sameAs: [profile.github, profile.linkedin].filter(Boolean), alumniOf: { '@type': 'CollegeOrUniversity', name: profile.institution } }).replace(/</g, '\\u003c') }}/>
   </>;
 }

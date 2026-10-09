@@ -23,7 +23,7 @@ export default function ProjectStack({ projects, email }: { projects: Project[];
           if (index === panels.length - 1) return;
           ScrollTrigger.create({ trigger: panel, start: 'top top', endTrigger: panels[panels.length - 1], end: 'top top', pin: true, pinSpacing: false, anticipatePin: 1, invalidateOnRefresh: true });
           gsap.to(cards[index], {
-            scale: .94, y: -18, rotate: index % 2 === 0 ? -1 : 1, ease: 'none',
+            scale: .97, y: -12, ease: 'none',
             scrollTrigger: { trigger: panels[index + 1], start: 'top 85%', end: 'top top', scrub: true, invalidateOnRefresh: true },
           });
         });
@@ -65,7 +65,8 @@ export default function ProjectStack({ projects, email }: { projects: Project[];
         <div className="project-card-body">
           <div className="project-copy"><h3 id={`project-${index}`}>{project.title}<span>.</span></h3><p className="project-statement">{project.description}</p><p className="project-description">{project.detail}</p>
             <div className="tags">{project.stack.map((technology) => <span key={technology}>{technology}</span>)}</div>
-            <div className="project-actions"><ProjectDetails index={index} project={project} email={email} />{project.live && <a className="round-link" aria-label={`Visit ${project.title} website`} href={project.live} target="_blank" rel="noreferrer"><ArrowUpRight size={22} /></a>}</div>
+            <ul className="project-evidence">{project.highlights.slice(0, 2).map(highlight => <li key={highlight}>{highlight}</li>)}</ul>
+            <div className="project-actions"><ProjectDetails index={index} project={project} email={email} />{project.github && <a className="text-link" href={project.github} target="_blank" rel="noreferrer">Source code <ArrowUpRight size={16}/></a>}{project.live && <a className="text-link" aria-label={`Visit ${project.title} website`} href={project.live} target="_blank" rel="noreferrer">Live site <ArrowUpRight size={16} /></a>}</div>
           </div>
           <div className={`project-art art-${project.color}`}>
             {project.image ? <a className="screenshot-link" href={project.live || project.image} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}>

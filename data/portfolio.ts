@@ -33,7 +33,7 @@ export const projects = [
     title: 'Gym Nexus', category: 'Java management application',
     description: 'Keep the records. Lose the paperwork.',
     detail: 'A gym management application for member and staff records. Java handles the application logic, with database operations and role-based access for different users.',
-    stack: ['Java', 'MySQL', 'REST APIs'], github: `${profile.github}/Gym-Nexus`, live: null, image: null, imageAlt: null,
+    stack: ['Java', 'MySQL', 'Swing', 'JDBC'], github: `${profile.github}/Gym-Nexus`, live: null, image: null, imageAlt: null,
     highlights: ['Manage member and staff records', 'Control access by user role', 'Store and update records in a database'], color: 'cloud',
   },
 ];
@@ -48,5 +48,5 @@ export const skills = [
 export const repositoryDescriptions: Record<string, string> = {
   WriteCodeProof: 'Sandboxed tests, security checks, and behaviour diffs for pull requests.',
   Elevate: 'Job analysis, resume comparison, and interview preparation.',
-  'Student-CRUD-operations': 'A Java application with RESTful create, read, update, and delete operations.',
+  'Student-CRUD-operations': 'Java servlet application for creating, reading, updating, and deleting student records.',
 };
