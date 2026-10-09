@@ -51,7 +51,7 @@ test('touch layouts keep every project reachable on phones and tablets in both o
       await expect(page.getByRole('button', { name: 'Open menu' })).toBeVisible();
     }
     for (let index = 0; index < 4; index++) {
-      const panel = page.locator('.stack-panel').nth(index);
+      const panel = page.locator('.project-card').nth(index);
       await panel.evaluate((element) => {
         const spacer = element.parentElement?.classList.contains('pin-spacer') ? element.parentElement : element;
         window.scrollTo({ top: spacer!.getBoundingClientRect().top + scrollY, behavior: 'instant' });
@@ -82,7 +82,7 @@ test('light responsive layouts, images, and contact links', async ({ page }) => 
     await expect(page.locator('.hero-headline')).toHaveText('Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student');
     await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
-    await expect(page.getByRole('link', { name: 'Email Me', exact: true })).toHaveAttribute('href', 'mailto:saitharunreddy@writecode.in');
+    await expect(page.locator('.email-address')).toHaveAttribute('href', 'mailto:saitharunreddy@writecode.in');
     await page.screenshot({ path: `test-results/hero-${width}.png`, animations: 'disabled' });
     // Reach every project through its real document position and check loaded images.
     await page.locator('#contact').scrollIntoViewIfNeeded();
@@ -93,28 +93,16 @@ test('light responsive layouts, images, and contact links', async ({ page }) => 
   await expect(page.locator('main')).not.toContainText('Built with intent');
 });
 
-test('cards pin, recede, and overlap while scrolling', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
-  await expect(page.locator('.project-stack')).toHaveAttribute('data-stacking', 'true');
-  const secondTop = await page.locator('.stack-panel').nth(1).evaluate((panel) => panel.getBoundingClientRect().top + scrollY);
-  await page.evaluate((top) => window.scrollTo({ top: top - 350, behavior: 'instant' }), secondTop);
-  await expect(page.locator('.stack-panel').first()).toHaveCSS('position', 'fixed');
-  const transform = await page.locator('.project-card').first().evaluate((card) => {
-    const matrix = new DOMMatrix(getComputedStyle(card).transform);
-    return Math.hypot(matrix.a, matrix.b);
-  });
-  expect(transform).toBeLessThan(.99);
-  expect(transform).toBeGreaterThan(.93);
-  const cards = await page.locator('.project-card').evaluateAll((elements) => elements.slice(0, 2).map((element) => element.getBoundingClientRect().toJSON()));
-  expect(cards[1].top).toBeLessThan(cards[0].bottom);
-  await page.screenshot({ path: 'test-results/stack-overlap.png' });
-  await page.setViewportSize({ width: 390, height: 900 });
-  await page.goto('/');
-  await expect(page.locator('.project-stack')).toHaveAttribute('data-mobile-stacking', 'true');
-  await expect(page.locator('.stack-panel').first()).toHaveCSS('position', 'sticky');
+test('projects stay readable in normal document flow', async ({ page }) => {
+  for (const width of [1440, 768, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    await expect(page.locator('.project-card')).toHaveCount(4);
+    const cards = await page.locator('.project-card').evaluateAll(elements => elements.map(element => element.getBoundingClientRect().toJSON()));
+    for (let index = 1; index < cards.length; index++) expect(cards[index].top).toBeGreaterThanOrEqual(cards[index - 1].bottom - 1);
+    await expect(page.getByRole('link', { name: 'LeetCode', exact: true })).toHaveAttribute('href', 'https://leetcode.com/u/koppulasaitharunreddy/');
+  }
 });
-
 test('project dialogs, mobile menu, clipboard, and real resume download', async ({ page, request, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.setViewportSize({ width: 390, height: 900 });
@@ -132,7 +120,7 @@ test('project dialogs, mobile menu, clipboard, and real resume download', async 
   await expect(page.getByRole('button', { name: 'Copied', exact: true })).toBeVisible();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('saitharunreddy@writecode.in');
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('link', { name: 'Download Resume', exact: true }).last().click();
+  await page.locator('.hero').getByRole('link', { name: 'Download Resume', exact: true }).click();
   expect((await downloadPromise).suggestedFilename()).toBe('Sai-Tharun-Reddy-Resume.pdf');
   const resume = await request.get('/resume');
   expect(resume.status()).toBe(200);
@@ -145,7 +133,7 @@ test('reduced motion, metadata, and accessibility', async ({ page }) => {
   await expect(page).toHaveTitle(/Koppula Sai Tharun Reddy/);
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /opengraph-image/);
   await expect(page.locator('.project-stack')).not.toHaveAttribute('data-stacking', 'true');
-  await expect(page.locator('.stack-panel').first()).toHaveCSS('position', 'relative');
+  await expect(page.locator('.project-card').first()).toHaveCSS('position', 'static');
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(results.violations).toEqual([]);
 });

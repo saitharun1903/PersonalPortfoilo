@@ -18,10 +18,10 @@ export default async function Home() {
   const surname = nameParts.pop();
   return <>
     <a className="skip-link" href="#main">Skip to content</a><Navigation profile={profile} sections={sections} />
-    <main id="main" className="recruiter-portfolio">
+    <main id="main" className="recruiter-portfolio simple-portfolio">
       <section className="hero container" id="home">
-        <div className="hero-copy"><p className="hero-introduction">{profile.note} <span>/ {profile.jobTitle}</span></p><h1 className="hero-name">{nameParts.length > 0 && <span>{nameParts.join(' ')}</span>}<em>{surname}.</em></h1><p className="hero-description hero-headline">{profile.headline}</p>
-          <div className="hero-actions">{sections.projects && projects.length > 0 && <a className="button primary" href="#projects">View My Work <ArrowDown size={17} /></a>}<ResumeButton href={profile.resume}/></div>
+        <div className="hero-copy"><p className="hero-introduction">{profile.jobTitle}</p><h1 className="hero-name">{nameParts.length > 0 && <span>{nameParts.join(' ')}</span>}<em>{surname}</em></h1><p className="hero-description hero-headline">{profile.headline}</p>
+          <div className="hero-actions">{sections.projects && projects.length > 0 && <a className="button primary" href="#projects">Projects <ArrowDown size={17} /></a>}<ResumeButton href={profile.resume}/></div>
           <SocialLinks profile={profile}/>
         </div>
         <aside className="hero-portrait"><div className="portrait-card">{profile.portrait && <Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 767px) 96px, 260px" />}</div><div className="hero-credentials"><p>{profile.qualification}</p><span>{profile.institution}</span><span><MapPin size={13}/>{profile.location}</span></div></aside>
