@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
-import { Manrope, Lora } from 'next/font/google';
+import { Figtree, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { siteUrl } from '../lib/site';
-const sans = Manrope({ subsets: ['latin'], variable: '--font-sans' });
-const serif = Lora({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-serif' });
+const sans = Figtree({ subsets: ['latin'], variable: '--font-sans' });
+const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif' });
+const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Koppula Sai Tharun Reddy | Backend Developer',
@@ -13,5 +14,5 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 };
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={`${sans.variable} ${serif.variable}`}><body>{children}</body></html>;
+  return <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`}><body>{children}</body></html>;
 }

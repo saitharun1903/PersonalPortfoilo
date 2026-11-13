@@ -1,25 +1,26 @@
 # Portfolio design direction
 
-Personal developer portfolio for recruiters and engineers. Light editorial composition, clean white surfaces, deeper sky-blue accents, and navy text, with specific project writing and real assets. Shared CSS tokens keep the public site and admin consistent: white #ffffff, navy #102d43, muted text #405d72, primary blue #0076b8, pale sky #d6efff, and stronger card surfaces #b2e1ff.
+Personal developer portfolio for recruiters and engineers. Warm and natural rather than templated: a paper-toned page with a faint grain, a serif display voice, and a monospace face for the technical details. One dark surface only, the contact panel that closes the page.
 
-Layout variance 7, motion 6, density 3. Native CSS in the existing Next.js application. Manrope for sans-serif text, Lora italic for a limited personal accent. No dark section inversions, AI badges, mock metrics, or simulated product screenshots.
+Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: paper #f6f1e7, deeper paper #ede5d6, card #fcf9f3, ink #1c231f, muted text #59625a, moss accent #2c5a44, deep moss #1d3f2f, clay highlight #a34a26, and line #dcd3c1. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
 
-## Audit and changes
+Typography: Instrument Serif for headings, with its italic in clay for the accent word of each heading; Figtree for body text; JetBrains Mono for labels, tags, and the hero keyword line.
 
-- Replaced the particle hero with the owner's public GitHub portrait.
-- Replaced promotional headings and repeated labels with a personal introduction and project-specific copy.
-- Replaced the WriteCode simulation and Elevate workflow illustration with screenshots from the actual applications.
-- Added pinned project cards with scale, slight rotation, and overlap through GSAP ScrollTrigger. Desktop panels pin at `top top`; the incoming panel drives the preceding card's scale. Mobile uses native sticky only when every card fits in the viewport. Short screens and reduced-motion users get the full document flow.
-- Preserved email, social links, resume, project dialogs, and server-side GitHub fetching.
-- Mobile descriptions remain available in project dialogs.
-- Light-theme contrast is checked with axe, alongside keyboard and responsive browser checks.
+## Layout
 
-## References reviewed
+- Floating pill navigation with the active section filled in moss.
+- Hero: oversized name, mono keyword line, and the portrait in an arch with an offset moss block and a credentials card.
+- Projects: alternating two-column rows in normal document flow. Projects with a screenshot show it in a tilted browser window; projects without one get a typographic cover.
+- About, skills, experience, certifications, and GitHub share one vertical rhythm, separated by hairlines.
+- Certificates show a cover only when an image has been uploaded.
 
-- https://brittanychiang.com/ — clear introduction and project descriptions.
-- https://rauno.me/ — personal typography and interaction details.
-- https://www.awwwards.com/websites/portfolio/ — composition and motion references.
-- https://gsap.com/docs/v3/Plugins/ScrollTrigger/ — pinning, scrubbing, and responsive cleanup.
+## Motion
+
+One staggered entrance in the hero, soft scroll reveals, and small hover responses. Everything is disabled under `prefers-reduced-motion`.
+
+## Checks
+
+Contrast is checked with axe (WCAG 2.1 AA) alongside keyboard, touch, and responsive browser tests from 320px to 1440px.
 
 ## Asset sources
 
@@ -27,5 +28,3 @@ Layout variance 7, motion 6, density 3. Native CSS in the existing Next.js appli
 - `public/images/writecode.webp`: actual Java workspace at https://writecode.in/?new=java.
 - `public/images/elevate.webp`: actual homepage at https://elevatee-pi.vercel.app.
 - Mentivox and Gym Nexus use typographic project covers.
-
-Reference sites inform the design; their imagery and code are not included in the portfolio.
