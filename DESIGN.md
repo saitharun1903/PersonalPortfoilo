@@ -2,13 +2,13 @@
 
 A plain personal site, written and laid out the way a developer would make their own page: readable text, real screenshots, and links that look like links. It deliberately avoids the visual habits of template and AI-generated portfolios: no gradients or glows, no pill badges, no stat counters, no scrolling skill strips, no cursor effects, no tilted mock-ups, and no card grids. The project deck, certificate reel, and click burst are the deliberate flourishes.
 
-Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: page #fdfcf9 with a soft peach and sky glow at the top, navy ink #14213d, muted text #566179, faint text #6b7488, lines #e4e7ee, wash #f1f4f9, and a tomato accent #c2300f for links and highlights, with cobalt #2846c9 and emerald #12805c as supporting colours. Project cards use pastel tints (peach, sky, mint, butter); certificate covers cycle through cobalt, tomato, emerald, and navy with white info panels. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
+Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: a cool off-white page #f8f9fc with a soft blue and peach glow at the top, navy ink #14213d, muted text #566179, faint text #6b7488, lines #e2e6ef, wash #eef2fa, and a royal-blue accent #2b4acb for links, buttons, and highlights. The cards keep their own colours: project cards use pastel tints (peach, sky, mint, butter) with tomato #c2300f links, and certificate covers cycle through cobalt #2846c9, tomato, emerald #12805c, and navy with white info panels. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
 
 Typography: Newsreader (serif) for headings and reading text; Public Sans for navigation, links, and small meta text.
 
 ## Layout
 
-- Plain header: name on the left, text navigation on the right, a small resume link.
+- Navigation: a floating frosted bar that stays at the top while scrolling, with a round monogram, the name, a navy pill that slides behind the current section, a blue Resume button, and a thin line along the bottom showing reading progress. On narrow screens the links move into a solid drop-down panel. Project cards stop just below the bar.
 - Introduction: "Hello, I'm", the name, the headline, the first About paragraph, then text links. The photo sits to the right with its caption (a small round photo above the name on phones).
 - Every section uses the same two-column layout: the title on the left and the content on the right, separated by hairlines. It becomes one column on narrow screens.
 - Projects are a deck of cards, each in its own soft tint (sand, sage, blush, slate) with a large title, the one-line statement, description, technologies, and links. The real screenshot sits on the right; projects without one get a dark or rust poster with the title in italic.
