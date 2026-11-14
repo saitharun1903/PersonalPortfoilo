@@ -1,69 +1,76 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowLeft, ArrowUpRight, Award, Pause, Play } from 'lucide-react';
+import { ArrowUpRight, Award, Pause, Play, X } from 'lucide-react';
 import type { Certificate } from '../lib/content-schema';
 
 const number = (index: number) => String(index + 1).padStart(2, '0');
 const shortIssuer = (issuer: string) => issuer.split('·')[0].trim() || issuer;
 
-function Cover({ certificate, sizes }: { certificate: Certificate; sizes: string }) {
-  if (certificate.image) return <Image className="cert-cover" src={certificate.image} alt="" width={700} height={900} unoptimized={certificate.image.startsWith('https:')} sizes={sizes}/>;
+function Cover({ certificate }: { certificate: Certificate }) {
+  if (certificate.image) return <Image className="cert-cover" src={certificate.image} alt="" width={700} height={900} unoptimized={certificate.image.startsWith('https:')} sizes="300px"/>;
   return <div className="cert-cover cert-poster" aria-hidden="true"><Award strokeWidth={1.1}/><span>{certificate.title}</span></div>;
 }
 
-// The reel card: a tall black-and-white cover with an issuer badge and a name panel.
-function ReelCard({ certificate, index, onOpen }: { certificate: Certificate; index: number; onOpen?: () => void }) {
-  return <div className="cert-reel-card">
-    <Cover certificate={certificate} sizes="300px"/>
-    <span className="cert-badge">{shortIssuer(certificate.issuer)}</span>
-    <div className="cert-panel">
-      <h3>{certificate.title}</h3>
-      {certificate.description && <p>{certificate.description}</p>}
-      <div className="cert-panel-foot"><span>{certificate.date || number(index)}</span><span>View details</span></div>
+// One card in the reel. On devices that can hover it widens on hover; elsewhere a tap opens it.
+// The details panel keeps a fixed size and is only revealed, so nothing reflows while the card grows.
+function ReelCard({ certificate, index, total, open, onToggle, clone }: { certificate: Certificate; index: number; total: string; open: boolean; onToggle: () => void; clone?: boolean }) {
+  const focus = clone ? -1 : undefined;
+  const id = clone ? undefined : `certificate-${index}`;
+  return <div className="cert-reel-card" data-open={open || undefined}>
+    <div className="cert-face">
+      <Cover certificate={certificate}/>
+      <span className="cert-badge">{shortIssuer(certificate.issuer)}</span>
+      <div className="cert-panel">
+        <h3 id={id}>{certificate.title}</h3>
+        {certificate.description && <p>{certificate.description}</p>}
+        <div className="cert-panel-foot"><span>{certificate.date || number(index)}</span><span>Details</span></div>
+      </div>
+      <button className="cert-open" tabIndex={focus} onClick={onToggle} aria-expanded={open} aria-label={`${open ? 'Close' : 'Open'} ${certificate.title}`}/>
     </div>
-    {onOpen && <button className="cert-open" onClick={onOpen} aria-label={`Open ${certificate.title}`}/>}
+    <div className="cert-info">
+      <button className="cert-close" tabIndex={focus} onClick={onToggle} aria-label={`Close ${certificate.title}`}><X size={18}/></button>
+      <p className="cert-kicker">Certificate · {shortIssuer(certificate.issuer)}</p>
+      <p className="cert-title">{certificate.title}</p>
+      <p className="cert-issuer">{certificate.issuer}</p>
+      <dl className="cert-stats"><div><dt>Issued</dt><dd>{certificate.date || 'Not dated'}</dd></div><div><dt>Number</dt><dd>{number(index)} / {total}</dd></div></dl>
+      {certificate.description && <p className="cert-description">{certificate.description}</p>}
+      {(certificate.pdf || certificate.verification) && <div className="cert-actions">
+        {certificate.pdf && <a className="cert-button primary" tabIndex={focus} href={certificate.pdf} target="_blank" rel="noreferrer">View certificate</a>}
+        {certificate.verification && <a className="cert-button" tabIndex={focus} href={certificate.verification} target="_blank" rel="noreferrer">Verify <ArrowUpRight size={15}/></a>}
+      </div>}
+    </div>
   </div>;
 }
 
 export default function Certifications({ certificates }: { certificates: Certificate[] }) {
   const [paused, setPaused] = useState(false);
-  const [active, setActive] = useState<number | null>(null);
+  const [open, setOpen] = useState<string | null>(null);
+  const root = useRef<HTMLDivElement>(null);
+
+  // A tapped card closes again when the visitor taps elsewhere or presses Escape.
+  useEffect(() => {
+    if (!open) return;
+    const outside = (event: PointerEvent) => { if (!(event.target as Element).closest('.cert-reel-card[data-open]')) setOpen(null); };
+    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(null); };
+    document.addEventListener('pointerdown', outside);
+    document.addEventListener('keydown', escape);
+    return () => { document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', escape); };
+  }, [open]);
+
   if (certificates.length === 0) return null;
   // Enough copies of the set that the reel never shows a gap on wide screens.
   const copies = Math.max(2, Math.ceil(2200 / (certificates.length * 316)) + 1);
   const total = number(certificates.length - 1);
+  const card = (certificate: Certificate, index: number, key: string, clone = false) =>
+    <ReelCard certificate={certificate} index={index} total={total} clone={clone} open={open === key} onToggle={() => setOpen(current => current === key ? null : key)}/>;
 
-  if (active !== null) return <div className="cert-showcase" data-mode="focus">
-    <div className="cert-toolbar"><button className="cert-control" onClick={() => setActive(null)}><ArrowLeft size={16}/>Back to slideshow</button></div>
-    <ul className="cert-accordion">
-      {certificates.map((certificate, index) => <li className="certificate-card" data-active={index === active || undefined} key={index}>
-        {index === active
-          ? <article className="cert-detail" aria-labelledby={`certificate-${index}`}>
-              <div className="cert-detail-media"><Cover certificate={certificate} sizes="(max-width: 700px) 80vw, 420px"/></div>
-              <div className="cert-detail-copy">
-                <p className="cert-kicker">Certificate · {shortIssuer(certificate.issuer)}</p>
-                <h3 id={`certificate-${index}`}>{certificate.title}</h3>
-                <p className="cert-issuer">{certificate.issuer}</p>
-                <dl className="cert-stats"><div><dt>Issued</dt><dd>{certificate.date || 'Not dated'}</dd></div><div><dt>Number</dt><dd>{number(index)} / {total}</dd></div></dl>
-                {certificate.description && <p className="cert-description">{certificate.description}</p>}
-                {(certificate.pdf || certificate.verification) && <div className="cert-actions">
-                  {certificate.pdf && <a className="cert-button primary" href={certificate.pdf} target="_blank" rel="noreferrer">View certificate</a>}
-                  {certificate.verification && <a className="cert-button" href={certificate.verification} target="_blank" rel="noreferrer">Verify <ArrowUpRight size={15}/></a>}
-                </div>}
-              </div>
-            </article>
-          : <button className="cert-strip" onClick={() => setActive(index)} aria-label={`Show ${certificate.title}`}><Cover certificate={certificate} sizes="80px"/><span>{certificate.title}</span></button>}
-      </li>)}
-    </ul>
-  </div>;
-
-  return <div className="cert-showcase" data-mode="reel">
-    <div className="cert-toolbar"><p>Click a certificate to see the details.</p><button className="cert-control" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? <Play size={15}/> : <Pause size={15}/>}{paused ? 'Play' : 'Pause'}</button></div>
+  return <div className="cert-showcase" ref={root}>
+    <div className="cert-toolbar"><p>Hover over or tap a certificate to see the details.</p><button className="cert-control" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? <Play size={15}/> : <Pause size={15}/>}{paused ? 'Play' : 'Pause'}</button></div>
     <div className="cert-viewport" role="region" aria-label="Certificates" tabIndex={0}>
-      <ul className="cert-track" data-paused={paused || undefined} style={{ '--copies': copies, '--duration': `${certificates.length * copies * 5}s` } as React.CSSProperties}>
-        {certificates.map((certificate, index) => <li className="certificate-card" key={index}><ReelCard certificate={certificate} index={index} onOpen={() => setActive(index)}/></li>)}
-        {Array.from({ length: copies - 1 }, (_, copy) => certificates.map((certificate, index) => <li className="cert-clone" aria-hidden="true" key={`${copy}-${index}`}><ReelCard certificate={certificate} index={index}/></li>))}
+      <ul className="cert-track" data-paused={paused || open ? true : undefined} style={{ '--count': certificates.length, '--duration': `${certificates.length * 6}s` } as React.CSSProperties}>
+        {certificates.map((certificate, index) => <li className="certificate-card" key={index} aria-labelledby={`certificate-${index}`}>{card(certificate, index, `0-${index}`)}</li>)}
+        {Array.from({ length: copies - 1 }, (_, copy) => certificates.map((certificate, index) => <li className="cert-clone" aria-hidden="true" key={`${copy + 1}-${index}`}>{card(certificate, index, `${copy + 1}-${index}`, true)}</li>))}
       </ul>
     </div>
   </div>;
