@@ -5,6 +5,7 @@ import { CopyEmail, Navigation, ResumeButton } from '../components/interactions'
 import ProjectStack from '../components/project-stack';
 import Certifications from '../components/certifications';
 import SocialLinks from '../components/social-links';
+import HeroBurst from '../components/hero-burst';
 import { getContent } from '../lib/content';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,7 @@ export default async function Home() {
     <a className="skip-link" href="#main">Skip to content</a><Navigation profile={profile} sections={sections} />
     <main id="main">
       <section className="hero container" id="home">
+        <HeroBurst />
         <div className="hero-copy">
           <p className="hero-introduction">{copy.heroIntro}</p>
           <h1 className="hero-name">{profile.brand}</h1>
@@ -53,9 +55,9 @@ export default async function Home() {
         <ul className="section-body entry-list">{experience.map((item, index) => <li className="entry" key={index}><span className="entry-when">{item.kind}</span><div><h3>{item.title}</h3><p className="entry-where">{item.organization}</p>{item.description && <p>{item.description}</p>}</div></li>)}</ul>
       </section>}
 
-      {sections.certifications && <section className="section container" id="certifications">
+      {sections.certifications && <section className="section wide-section container" id="certifications">
         <header className="section-head"><h2>{join(copy.certificatesTitle, copy.certificatesAccent)}</h2>{copy.certificatesDescription && <p>{copy.certificatesDescription}</p>}</header>
-        <div className="section-body"><Certifications certificates={certifications}/></div>
+        <Certifications certificates={certifications}/>
       </section>}
 
       {sections.github && <section className="section container" id="github">
