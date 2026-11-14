@@ -33,9 +33,9 @@ export default async function Home() {
         {profile.portrait && <figure className="hero-portrait"><Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 700px) 120px, 240px" />{profile.caption && <figcaption>{profile.caption}</figcaption>}</figure>}
       </section>
 
-      {sections.projects && <section className="section container" id="projects">
+      {sections.projects && <section className="section projects-section container" id="projects">
         <header className="section-head"><h2>{join(copy.projectsTitle, copy.projectsAccent)}</h2>{copy.projectsDescription && <p>{copy.projectsDescription}</p>}</header>
-        <div className="section-body">{projects.length > 0 && <ProjectStack projects={projects} email={profile.email}/>}</div>
+        {projects.length > 0 && <ProjectStack projects={projects} email={profile.email}/>}
       </section>}
 
       {sections.about && <section className="section container" id="about">
