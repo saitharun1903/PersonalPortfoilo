@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import { Figtree, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
+import { Newsreader, Public_Sans } from 'next/font/google';
 import './globals.css';
 import { siteUrl } from '../lib/site';
-const sans = Figtree({ subsets: ['latin'], variable: '--font-sans' });
-const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif' });
-const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
+const sans = Public_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const serif = Newsreader({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-serif' });
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Koppula Sai Tharun Reddy | Backend Developer',
@@ -14,5 +13,5 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 };
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`}><body>{children}</body></html>;
+  return <html lang="en" className={`${sans.variable} ${serif.variable}`}><body>{children}</body></html>;
 }
