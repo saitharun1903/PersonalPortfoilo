@@ -30,20 +30,29 @@ Use the publishable or legacy anon key, never a secret or service-role key. Rede
 
 ## 4. Publish your content
 
-Visit `https://saitharunreddy.me/admin`, log in with the owner account, and click **Publish changes** once to persist the current portfolio. Replace the four explicitly marked sample certificates with real credentials.
+Visit `https://saitharunreddy.me/admin` and log in with the owner account. The editor opens on exactly what the live page shows. If that includes updates not yet in your database (such as the ten bundled certificates replacing the old sample cards), a blue note says so; click **Publish** once to save them.
 
-Use the sidebar to edit profile/contact, page text/SEO, projects, certifications, about paragraphs, skills, experience, GitHub links, and section visibility. Expand an item to edit, move, or remove it. Changes stay unpublished until you click **Publish changes**. Closing the browser without publishing discards those local edits.
+**Sections:** Profile, Projects, Certificates, About, Skills, Experience, GitHub repos, Page text, Sections (turn whole sections on or off) and Media library. Each has a short guide at the top. Expand an item to edit it, move it up or down, or remove it. Fields that never appear on the live page are hidden.
 
-Upload PNG, JPEG, WebP, and PDF files up to 3 MB using the appropriate field. Uploads are public portfolio assets. Resume PDFs from Storage open in a new tab and can be downloaded there. Removing a card removes it from the page; its file remains in Media library until deleted separately. Published file references are checked before deletion. Do not delete a file used by another unpublished editing tab.
+**Publishing:** changes stay in the editor until you click **Publish** (or press Ctrl/Cmd + S). **Discard** throws away unpublished changes. The status next to the buttons shows when you last published. On phones these controls sit in a bar at the bottom of the screen. Closing the browser without publishing loses unpublished edits; the browser warns you first.
 
-The public page reads the database on every new request. Reload an already-open visitor tab to see changes. No redeploy is needed after a successful publish. If another admin tab publishes first, your stale save is rejected rather than overwriting its work. Copy any edits you wish to preserve before reloading.
+**Photos and files:** every image and PDF field (profile photo, resume, project screenshots, certificate images and PDFs) shows a preview with these buttons:
+
+- **Upload / Replace** chooses a file from your device. Large photos (for example straight from a phone) are shrunk in your browser to at most 2400px and saved as WebP before upload, so they load fast. PDFs can be up to 4 MB.
+- **From library** reuses a file you uploaded before.
+- **Open** opens the current file; **Remove** clears the field. You can also paste a link.
+- For certificates, uploading an image when the PDF field is empty also creates a PDF from it automatically, so the download button works. **Make PDF from image** does the same on demand.
+
+**Media library** shows every uploaded file as a thumbnail. Upload several at once, copy a file's link, or delete files. Files used on the published page cannot be deleted; remove them from the page and publish first.
+
+Uploads are public files. The public page reads the database on every request, so a publish shows up after a reload with no redeploy. If another admin tab published first, your save is rejected rather than overwriting its work; copy any edits you want to keep before reloading.
 
 ## 5. Verify the live setup
 
 1. Publish a small edit, reload the public page, and confirm it is visible.
 2. Sign out and confirm `/admin` shows only the login screen.
 3. Sign back in and confirm the change remains.
-4. Upload a certificate PDF, publish its link, and open it from the public page.
+4. Upload a certificate image, check a PDF was created for it, publish, and download it from the public page.
 5. Remove the test item, publish, and confirm it disappears.
 
 `npm run test:production` covers responsive public pages. `npm run test:database` exercises the real SQL policies in local PostgreSQL through PGlite, including denied anonymous/non-owner writes. Full cloud owner login/persistence checks require your owner session and the SQL setup above.
