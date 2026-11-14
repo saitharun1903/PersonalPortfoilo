@@ -65,11 +65,12 @@ img { max-width: 100%; height: auto; }
 .resume-link { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 18px; border-radius: 999px; background: var(--accent); color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; box-shadow: 0 8px 18px -10px #2b4acbcc; transition: background .2s, transform .2s; }
 .resume-link:hover { background: var(--accent-dark); transform: translateY(-1px); }
 .menu-toggle { display: none; width: 44px; height: 44px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 50%; background: var(--wash); color: var(--ink); }
-.nav-resume { display: none; }
+.nav-links .nav-resume { display: none; }
 .nav-progress { position: absolute; left: 26px; right: 26px; bottom: -1px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--accent), #7c93ff); transform: scaleX(0); transform-origin: left; pointer-events: none; }
 
 /* Introduction */
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 56px; align-items: start; padding: 64px 0 72px; }
+/* The introduction fills the window below the navigation; the next section appears only on scroll. */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 56px; align-items: center; align-content: center; min-height: calc(100vh - 72px); min-height: calc(100svh - 72px); padding: 32px 0 96px; }
 .hero-copy { min-width: 0; max-width: 640px; }
 .hero-introduction { font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 10px; }
 .hero-name { font-size: clamp(40px, 6vw, 60px); line-height: 1.05; letter-spacing: -.02em; font-weight: 500; }
@@ -81,7 +82,12 @@ img { max-width: 100%; height: auto; }
 .hero-socials a { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: #fff; color: var(--ink); text-decoration: none; box-shadow: 0 0 0 1px var(--line), 0 6px 16px -10px #14213d59; transition: background .2s, color .2s, transform .2s, box-shadow .2s; }
 .hero-socials a:hover { background: var(--accent); color: #fff; transform: translateY(-2px); box-shadow: 0 0 0 1px var(--accent), 0 10px 20px -10px #2b4acbcc; }
 .hero-socials svg { width: 20px; height: 20px; }
-.hero-portrait { margin-top: 8px; }
+.hero-portrait { margin-top: 0; }
+.hero-scroll { position: absolute; left: 50%; bottom: 28px; z-index: 3; display: grid; place-items: start center; width: 28px; height: 44px; padding-top: 8px; margin-left: -14px; border-radius: 999px; box-shadow: inset 0 0 0 2px #14213d73; transition: box-shadow .2s; }
+.hero-scroll:hover { box-shadow: inset 0 0 0 2px var(--accent); }
+.hero-scroll span { width: 4px; height: 9px; border-radius: 2px; background: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .hero-scroll span { animation: hero-scroll 1.8s cubic-bezier(.4, 0, .2, 1) infinite; } }
+@keyframes hero-scroll { 0% { transform: translateY(0); opacity: 0; } 25% { opacity: 1; } 70% { transform: translateY(14px); opacity: 0; } 100% { opacity: 0; } }
 .hero-portrait img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 25%; border-radius: 10px; background: var(--wash); box-shadow: 12px 12px 0 #d9e1ff, 0 20px 40px -24px #14213d66; }
 .hero-portrait figcaption { margin-top: 22px; font-style: italic; font-size: 16px; color: var(--muted); }
 
@@ -262,7 +268,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   .wordmark { font-size: 15px; }
   .monogram { width: 32px; height: 32px; font-size: 17px; }
   .resume-link { min-height: 40px; padding: 0 14px; }
-  .hero { grid-template-columns: 1fr; gap: 0; padding: 36px 0 48px; }
+  .hero { grid-template-columns: 1fr; gap: 0; padding: 24px 0 88px; }
   .hero-portrait { order: -1; display: flex; align-items: center; gap: 14px; margin: 0 0 24px; }
   .hero-portrait img { width: 76px; border-radius: 50%; box-shadow: 0 0 0 4px #d9e1ff; }
   .hero-portrait figcaption { margin: 0; }
@@ -321,4 +327,9 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   .wordmark { min-height: 44px; }
   .email-address { min-height: 44px; display: inline-flex; align-items: center; }
   .cert-control { min-height: 44px; }
+}
+/* Very short windows (phones held sideways): let the introduction size to its content. */
+@media (max-height: 520px) {
+  .hero { min-height: 0; padding-block: 32px 72px; }
+  .hero-scroll { display: none; }
 }
