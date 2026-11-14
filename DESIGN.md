@@ -2,7 +2,7 @@
 
 A plain personal site, written and laid out the way a developer would make their own page: readable text, real screenshots, and links that look like links. It deliberately avoids the visual habits of template and AI-generated portfolios: no gradients or glows, no pill badges, no stat counters, no scrolling skill strips, no cursor effects, no tilted mock-ups, and no card grids. The project deck, certificate reel, and click burst are the deliberate flourishes.
 
-Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: page #fbfaf7, ink #1d1c1a, muted text #66645e, faint text #74716a, lines #e4e1d9, wash #f2efe8, and one accent, rust #a8401c, used only for links. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
+Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: page #fdfcf9 with a soft peach and sky glow at the top, navy ink #14213d, muted text #566179, faint text #6b7488, lines #e4e7ee, wash #f1f4f9, and a tomato accent #c2300f for links and highlights, with cobalt #2846c9 and emerald #12805c as supporting colours. Project cards use pastel tints (peach, sky, mint, butter); certificate covers cycle through cobalt, tomato, emerald, and navy with white info panels. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
 
 Typography: Newsreader (serif) for headings and reading text; Public Sans for navigation, links, and small meta text.
 
