@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { defaultContent } from '../../data/default-content';
 import { contentSchema } from '../../lib/content-schema';
 import { backendConfigured, ownerDatabase } from '../../lib/supabase';
+import { normalizeContent } from '../../lib/content';
 import Login from './login';
 import Editor from './editor';
 import './admin.css';
@@ -15,5 +16,9 @@ export default async function Admin() {
   const { data, error } = await db.from('portfolio_content').select('document, version, updated_at').eq('id', 1).maybeSingle();
   const parsed = data ? contentSchema.safeParse(data.document) : null;
   if (error || (parsed && !parsed.success)) return <main className="admin-login"><div className="login-card"><h1>Content unavailable</h1><p>We couldn’t safely load your saved portfolio. Check the Supabase setup and reload. Your published content has not been changed.</p><a className="text-link" href="/admin">Try again</a></div></main>;
-  return <Editor initial={parsed?.success ? parsed.data : defaultContent} initialVersion={data?.version || 0} savedAt={data?.updated_at || null} />;
+  // Start from exactly what the live page shows. If that differs from the saved copy
+  // (for example, the bundled certificates replacing the samples), publishing saves it.
+  const saved = parsed?.success ? parsed.data : defaultContent;
+  const live = parsed?.success ? normalizeContent(saved) : defaultContent;
+  return <Editor initial={live} saved={saved} initialVersion={data?.version || 0} savedAt={data?.updated_at || null} />;
 }

@@ -44,7 +44,7 @@ export async function createUpload(form: FormData) {
   try {
     const db = await ownerDatabase();
     const file = form.get('file');
-    if (!(file instanceof File) || file.size === 0 || file.size > 3 * 1024 * 1024) return { error: 'Choose a PNG, JPEG, WebP, or PDF up to 3 MB.' };
+    if (!(file instanceof File) || file.size === 0 || file.size > 4_000_000) return { error: 'Choose a PNG, JPEG, WebP, or PDF up to 4 MB. Photos are shrunk automatically; large PDFs need compressing first.' };
     const bytes = Buffer.from(await file.arrayBuffer());
     const extension = bytes.subarray(0, 5).toString() === '%PDF-' ? 'pdf'
       : bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])) ? 'png'
