@@ -33,46 +33,13 @@ export function Navigation({ profile, sections }: { profile: PortfolioContent['p
 
 export function ResumeButton({ compact = false, href = '/resume' }: { compact?: boolean; href?: string }) {
   if (!href) return null;
-  return <a className={compact ? 'resume-link' : 'button secondary'} href={href} download="Sai-Tharun-Reddy-Resume.pdf" target={href.startsWith('https:') ? '_blank' : undefined} rel="noreferrer">{compact ? 'Resume' : 'Download Resume'}<Download size={16} /></a>;
-}
-
-export function RevealObserver() {
-  useEffect(() => {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.animate([{ opacity: .5, transform: 'translateY(22px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 650, easing: 'cubic-bezier(.2,.7,.3,1)' });
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: .12 });
-    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, []);
-  return null;
-}
-
-export function PointerGlow() {
-  useEffect(() => {
-    if (!matchMedia('(hover: hover) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const onMove = (event: PointerEvent) => {
-      const target = (event.target as Element | null)?.closest<HTMLElement>('.spot');
-      if (!target) return;
-      const box = target.getBoundingClientRect();
-      target.style.setProperty('--mx', `${event.clientX - box.left}px`);
-      target.style.setProperty('--my', `${event.clientY - box.top}px`);
-    };
-    document.addEventListener('pointermove', onMove, { passive: true });
-    return () => document.removeEventListener('pointermove', onMove);
-  }, []);
-  return null;
+  return <a className={compact ? 'resume-link' : 'text-link resume-download'} href={href} download="Sai-Tharun-Reddy-Resume.pdf" target={href.startsWith('https:') ? '_blank' : undefined} rel="noreferrer">{compact ? 'Resume' : 'Download Resume'}<Download size={15} aria-hidden="true" /></a>;
 }
 
 export function ProjectDetails({ index, project, email }: { index: number; project: Project; email: string }) {
   const ref = useRef<HTMLDialogElement>(null);
   return <>
-    <button className="text-link" onClick={() => ref.current?.showModal()}>Explore project <ArrowUpRight size={18} /></button>
+    <button className="text-link" onClick={() => ref.current?.showModal()}>Explore project</button>
     <dialog ref={ref} className="project-dialog" aria-labelledby={`dialog-title-${index}`} onClick={(event) => { if (event.target === ref.current) ref.current.close(); }}>
       <button className="dialog-close" aria-label="Close project" onClick={() => ref.current?.close()}><X /></button>
       <p className="dialog-category">{project.category}</p><h2 id={`dialog-title-${index}`}>{project.title}</h2><p>{project.detail}</p>

@@ -1,23 +1,23 @@
 # Portfolio design direction
 
-Personal developer portfolio for recruiters and engineers. Confident and high-contrast: a warm near-black page with a faint grid and grain, an electric lime accent, a coral spark for small details, and a lime contact panel that ends the page.
+A plain personal site, written and laid out the way a developer would make their own page: readable text, real screenshots, and links that look like links. It deliberately avoids the visual habits of template and AI-generated portfolios: no gradients or glows, no pill badges, no stat counters, no scrolling skill strips, no cursor effects, no tilted mock-ups, and no card grids.
 
-Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: night #0d0d0b, raised #151513 and #1c1c19, chalk text #f3f2ea, muted text #a6a59c, lime #d4ff3a, coral #ff7a4d, lines #2b2b27 and #3d3d37. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
+Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: page #fbfaf7, ink #1d1c1a, muted text #66645e, faint text #74716a, lines #e4e1d9, wash #f2efe8, and one accent, rust #a8401c, used only for links. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
 
-Typography: Bricolage Grotesque (bold, tight tracking) for headings, Hanken Grotesk for body text, JetBrains Mono for labels, tags, and the hero keyword line.
+Typography: Newsreader (serif) for headings and reading text; Public Sans for navigation, links, and small meta text.
 
 ## Layout
 
-- Floating dark pill navigation; the active section fills with lime.
-- Hero: oversized name with the surname in lime, mono keyword line, portrait in a lime-gradient frame with a glow, a "Java & Spring Boot" tag, and a credentials card.
-- Facts strip counted from the real content (projects, technologies, repositories) and a scrolling toolkit marquee.
-- Projects: full-width cards stacked in document flow, alternating sides. Screenshots sit in a browser window with a slight 3D tilt; projects without one get a large typographic cover.
-- Skills as an asymmetric bento grid (first card in lime), experience as a glowing timeline, certificates and repositories as cards.
-- Cards marked `.spot` get a soft light that follows the pointer (`PointerGlow` in `components/interactions.tsx`).
+- Plain header: name on the left, text navigation on the right, a small resume link.
+- Introduction: "Hello, I'm", the name, the headline, the first About paragraph, then text links. The photo sits to the right with its caption (a small round photo above the name on phones).
+- Every section uses the same two-column layout: the title on the left and the content on the right, separated by hairlines. It becomes one column on narrow screens.
+- Projects are a list: title, category, one-line statement, description, technologies, and links, with the real screenshot below where there is one.
+- Skills, experience, certifications, and repositories are simple lists.
+- Section titles drop a trailing full stop from the content so they read as headings.
 
 ## Motion
 
-A staggered hero entrance, the toolkit marquee (pauses on hover), scroll reveals, and the pointer light. Under `prefers-reduced-motion` all of it is off and the marquee becomes a static wrapped list.
+Only colour and underline changes on hover. Nothing animates on load or on scroll.
 
 ## Checks
 
@@ -28,4 +28,4 @@ Contrast is checked with axe (WCAG 2.1 AA) alongside keyboard, touch, and respon
 - `public/images/sai-tharun.webp`: profile image returned by https://api.github.com/users/saitharun1903.
 - `public/images/writecode.webp`: actual Java workspace at https://writecode.in/?new=java.
 - `public/images/elevate.webp`: actual homepage at https://elevatee-pi.vercel.app.
-- Mentivox and Gym Nexus use typographic project covers.
+- Mentivox and Gym Nexus have no screenshot yet, so they are shown as text only.
