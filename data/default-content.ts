@@ -18,9 +18,16 @@ export const defaultContent: PortfolioContent = {
   skills,
   experience: [
     { kind: 'Education', title: 'Computer Science & Engineering', organization: 'Malla Reddy University, Hyderabad', description: '' },
-    { kind: '2024', title: 'Technology Job Simulation', organization: 'Deloitte · Virtual learning experience', description: 'Software development, debugging, and problem-solving exercises.' },
+    { kind: '2025', title: 'Technology Job Simulation', organization: 'Deloitte · Virtual learning experience', description: 'Software development, debugging, and problem-solving exercises.' },
   ],
-  certifications: Array.from({ length: 4 }, (_, index) => ({ title: `Your certification ${index + 1}`, issuer: 'Sample · replace with your issuer', date: '', description: 'Sample card — replace with your own certificate details in the admin.', image: '', pdf: '', verification: '' })),
+  certifications: [
+    { title: 'AWS Academy Cloud Foundations', issuer: 'AWS Academy · Training badge', date: 'March 2026', description: 'Completed the 20-hour AWS Academy Graduate – Cloud Foundations course.', image: '/certificates/aws-cloud-foundations.webp', pdf: '/certificates/aws-cloud-foundations.pdf', verification: 'https://www.credly.com/go/N51PRYpK' },
+    { title: 'AWS Academy Cloud Security Foundations', issuer: 'AWS Academy · Trained badge', date: '', description: 'Trained badge for the AWS Academy Cloud Security Foundations course.', image: '/certificates/aws-cloud-security-foundations.webp', pdf: '/certificates/aws-cloud-security-foundations.webp', verification: '' },
+    { title: 'Technology Job Simulation', issuer: 'Deloitte · Forage', date: 'June 2025', description: 'Certificate of completion for practical tasks in coding and development during June 2025.', image: '/certificates/deloitte-technology-job-simulation.webp', pdf: '/certificates/deloitte-technology-job-simulation.webp', verification: '' },
+    { title: 'Code Sprint', issuer: 'HackWithIndia · Participation', date: '', description: 'Placed among the top 1,000 of 3,000 participating teams in Code Sprint.', image: '/certificates/hackwithindia-code-sprint.webp', pdf: '/certificates/hackwithindia-code-sprint.pdf', verification: '' },
+    { title: 'Prompt Engineering Workshop', issuer: 'SMEC NDLI Club · St. Martin’s Engineering College', date: 'December 2025', description: 'Participated in a Prompt Engineering workshop led by Manish Kardas, Data Scientist at Microsoft.', image: '/certificates/prompt-engineering-workshop.webp', pdf: '/certificates/prompt-engineering-workshop.pdf', verification: '' },
+    { title: 'MePro Level 10', issuer: 'Pearson · Completion certificate', date: 'April 2026', description: 'Completed Pearson MePro Level 10, an English programme built on the Global Scale of English.', image: '/certificates/pearson-mepro-level-10.webp', pdf: '/certificates/pearson-mepro-level-10.webp', verification: '' },
+  ],
   repositories: Object.entries(repositoryDescriptions).map(([title, description]) => ({ title, description, url: `${profile.github}/${title}`, language: title === 'Student-CRUD-operations' ? 'Java' : 'TypeScript' })),
   sections: { projects: true, about: true, skills: true, experience: true, certifications: true, github: true },
 };

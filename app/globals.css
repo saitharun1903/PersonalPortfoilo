@@ -156,12 +156,16 @@ a.project-media:hover { transform: translateY(-5px); box-shadow: 0 34px 60px -30
 .cert-reel-card { position: relative; width: var(--card-w); height: var(--cert-h); overflow: hidden; contain: layout paint; border-radius: 14px; background: #fff; color: var(--ink); font-family: var(--font-sans), sans-serif; box-shadow: 0 1px 0 #14213d0f, 0 18px 40px -26px #14213d73; transition: width .5s cubic-bezier(.2, .7, .2, 1); }
 .cert-face { position: absolute; inset: 0 auto 0 0; width: var(--card-w); background: var(--tone); }
 .cert-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); transition: filter .45s; }
+.cert-frame { display: flex; align-items: center; justify-content: center; padding: 58px 16px 172px; background: radial-gradient(#ffffff26 1.4px, transparent 1.6px) 0 0 / 16px 16px, var(--tone); filter: none; }
+.cert-frame img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 12px 18px #0000004d); transition: filter .45s, transform .45s cubic-bezier(.2, .7, .2, 1); }
+.cert-reel-card[data-open] .cert-frame img { transform: scale(1.03); }
+@media (hover: hover) { .cert-reel-card:hover .cert-frame img { transform: scale(1.03); } }
 .cert-poster { display: flex; flex-direction: column; justify-content: flex-start; gap: 16px; padding: 64px 22px 0; background: radial-gradient(#ffffff2e 1.4px, transparent 1.6px) 0 0 / 16px 16px, radial-gradient(130% 90% at 100% 0%, #ffffff33, transparent 60%), var(--tone); color: #fff; filter: none; }
 .cert-poster svg { width: 52px; height: 52px; color: #fff; }
 .cert-poster span { font-family: var(--font-serif), Georgia, serif; font-style: italic; font-size: 38px; line-height: 1; letter-spacing: -.02em; overflow-wrap: anywhere; }
 .cert-badge { position: absolute; top: 14px; left: 14px; max-width: calc(100% - 28px); padding: 6px 11px; border-radius: 999px; background: #fff; color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cert-panel { position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 16px 16px 14px; border-radius: 10px; background: #fff; box-shadow: 0 10px 24px -14px #14213d80; transition: opacity .3s; }
-.cert-panel h3 { font-family: var(--font-sans), sans-serif; font-size: 19px; font-weight: 800; letter-spacing: .01em; line-height: 1.15; text-transform: uppercase; color: var(--ink); overflow-wrap: anywhere; }
+.cert-panel h3 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-sans), sans-serif; font-size: 18px; font-weight: 800; letter-spacing: .01em; line-height: 1.15; text-transform: uppercase; color: var(--ink); overflow-wrap: anywhere; }
 .cert-panel p { margin-top: 4px; font-size: 14px; line-height: 1.4; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .cert-panel-foot { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
 .cert-panel-foot span:first-child { color: var(--accent); font-weight: 700; }
@@ -294,6 +298,8 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   /* Phones: the card keeps its width and the details slide up over the cover. */
   .cert-showcase { --cert-h: 400px; --card-w: 260px; --open-w: 260px; }
   .cert-poster span { font-size: 32px; }
+  .cert-panel h3 { font-size: 16px; }
+  .cert-frame { padding: 54px 14px 156px; }
   .cert-info { left: 0; width: 100%; padding: 22px 18px 18px; opacity: 1; transform: translateY(100%); transition: transform .4s cubic-bezier(.2, .7, .2, 1), visibility 0s .4s; }
   .cert-reel-card[data-open] .cert-info { transform: none; transition: transform .4s cubic-bezier(.2, .7, .2, 1), visibility 0s; }
   .cert-close { display: grid; }

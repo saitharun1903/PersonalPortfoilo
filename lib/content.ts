@@ -32,6 +32,13 @@ export const getContent = cache(async () => {
         content.copy[accent] = defaultContent.copy[accent];
       }
     }
+    // Replace the original sample certificates with the real ones until the owner adds their own.
+    const isSample = (certificate: (typeof content.certifications)[number]) => /^sample\b/i.test(certificate.issuer) || /^your certification\b/i.test(certificate.title);
+    if (content.certifications.length > 0 && content.certifications.every(isSample)) content.certifications = defaultContent.certifications;
+    // The Deloitte certificate is dated June 2025; correct the untouched seed year.
+    for (const item of content.experience) {
+      if (item.title === 'Technology Job Simulation' && item.kind === '2024' && item.organization.startsWith('Deloitte')) item.kind = '2025';
+    }
     return content;
   } catch {
     console.error('Portfolio content could not be loaded; serving the bundled portfolio.');

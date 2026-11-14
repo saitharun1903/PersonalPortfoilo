@@ -19,7 +19,7 @@ test('certifications adapt to mobile and admin stays private', async ({ page }) 
   for (const width of [390, 820, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto('/');
-    await expect(page.locator('.certificate-card')).toHaveCount(4);
+    await expect(page.locator('.certificate-card')).toHaveCount(defaultContent.certifications.length);
     await page.locator('#certifications').scrollIntoViewIfNeeded();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await page.screenshot({ path: `test-results/certifications-${width}.png`, animations: 'disabled' });

@@ -8,7 +8,8 @@ const number = (index: number) => String(index + 1).padStart(2, '0');
 const shortIssuer = (issuer: string) => issuer.split('·')[0].trim() || issuer;
 
 function Cover({ certificate }: { certificate: Certificate }) {
-  if (certificate.image) return <Image className="cert-cover" src={certificate.image} alt="" width={700} height={900} unoptimized={certificate.image.startsWith('https:')} sizes="300px"/>;
+  // The whole certificate stays visible, framed between the badge and the name panel.
+  if (certificate.image) return <div className="cert-cover cert-frame"><Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} loading="eager" unoptimized={certificate.image.startsWith('https:')} sizes="(max-width: 700px) 240px, 280px"/></div>;
   return <div className="cert-cover cert-poster" aria-hidden="true"><Award strokeWidth={1.1}/><span>{certificate.title}</span></div>;
 }
 
