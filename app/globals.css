@@ -27,6 +27,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 body { margin: 0; overflow-x: clip; background-color: var(--page); background-image: radial-gradient(900px 620px at 92% 0, #dde4ff 0%, transparent 65%), radial-gradient(820px 560px at -8% 0, #ffe7dd 0%, transparent 62%); background-repeat: no-repeat; color: var(--ink); font-family: var(--font-serif), Georgia, serif; font-size: 19px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; font-optical-sizing: auto; }
 a { color: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
+a, button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 ::selection { background: #d9e1ff; color: var(--ink); }
 h1, h2, h3, p, figure, ul, dl, dd { margin: 0; }
@@ -63,6 +65,7 @@ img { max-width: 100%; height: auto; }
 .resume-link { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 18px; border-radius: 999px; background: var(--accent); color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; box-shadow: 0 8px 18px -10px #2b4acbcc; transition: background .2s, transform .2s; }
 .resume-link:hover { background: var(--accent-dark); transform: translateY(-1px); }
 .menu-toggle { display: none; width: 44px; height: 44px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 50%; background: var(--wash); color: var(--ink); }
+.nav-resume { display: none; }
 .nav-progress { position: absolute; left: 26px; right: 26px; bottom: -1px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--accent), #7c93ff); transform: scaleX(0); transform-origin: left; pointer-events: none; }
 
 /* Introduction */
@@ -245,8 +248,11 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   .nav-links.open { position: absolute; top: calc(100% + 10px); left: 0; right: 0; display: flex; flex-direction: column; align-items: stretch; gap: 2px; margin: 0; padding: 8px; border: 1px solid #ffffffcc; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px #14213d0f, 0 24px 48px -20px #14213d66; max-height: calc(100dvh - 100px); overflow-y: auto; }
   .nav-links.open a { min-height: 48px; padding: 0 16px; border-radius: 14px; font-size: 17px; color: var(--ink); }
   .nav-links.open a[aria-current] { background: var(--ink); color: #fff; }
+  .navigation { background: #fffffff5; -webkit-backdrop-filter: none; backdrop-filter: none; }
   .section { grid-template-columns: 1fr; gap: 20px; padding: 40px 0 48px; }
-  .project-card { grid-template-columns: 1fr; min-height: 0; }
+  .project-card { min-height: 0; padding: 26px; gap: 24px; }
+  .project-copy h3 { font-size: 40px; }
+  .project-description { font-size: 16px; }
 }
 
 @media (max-width: 700px) {
@@ -269,6 +275,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   .project-dialog { padding: 48px 22px 24px; }
   .project-dialog h2 { font-size: 28px; }
   .project-stack { gap: 18px; }
+  .project-card { grid-template-columns: 1fr; }
   .project-card { gap: 20px; padding: 22px; border-radius: 22px; }
   .project-copy h3 { font-size: 38px; margin-top: 12px; }
   .project-statement { font-size: 18px; margin-top: 8px; }
@@ -303,4 +310,15 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
 @media (max-width: 400px) {
   .navigation > .resume-link { display: none; }
   .menu-toggle { margin-left: auto; }
+}
+@media (max-width: 400px) {
+  .nav-links.open .nav-resume { display: inline-flex; justify-content: space-between; gap: 8px; margin-top: 4px; background: var(--accent); color: #fff; font-weight: 600; }
+}
+/* Comfortable touch targets on phones and tablets. */
+@media (pointer: coarse) {
+  .nav-links a { min-height: 44px; }
+  .navigation { height: 64px; }
+  .wordmark { min-height: 44px; }
+  .email-address { min-height: 44px; display: inline-flex; align-items: center; }
+  .cert-control { min-height: 44px; }
 }

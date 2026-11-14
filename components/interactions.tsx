@@ -60,6 +60,7 @@ export function Navigation({ profile, sections }: { profile: PortfolioContent['p
       <span className="nav-indicator" ref={indicator} aria-hidden="true"/>
       {(['About', 'Projects', 'Experience', 'Skills', 'Certifications'] as const).filter(label => sections[label.toLowerCase() as keyof typeof sections]).map((label) => <a key={label} href={`#${label.toLowerCase()}`} aria-current={active === label.toLowerCase() ? 'location' : undefined} onClick={() => setOpen(false)}>{label}</a>)}
       <a href="#contact" aria-current={active === 'contact' ? 'location' : undefined} onClick={() => setOpen(false)}>Contact</a>
+      {profile.resume && <a className="nav-resume" href={profile.resume} download="Sai-Tharun-Reddy-Resume.pdf" onClick={() => setOpen(false)}>Resume<Download size={17} aria-hidden="true"/></a>}
     </nav>
     <ResumeButton compact href={profile.resume} />
     <button ref={toggle} className="menu-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <X size={20}/> : <Menu size={20}/>}</button>

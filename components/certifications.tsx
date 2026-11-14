@@ -47,6 +47,16 @@ export default function Certifications({ certificates }: { certificates: Certifi
   const [paused, setPaused] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
   const root = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(true);
+
+  // The reel only animates while it is on screen.
+  useEffect(() => {
+    const element = root.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { rootMargin: '100px 0px' });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   // A tapped card closes again when the visitor taps elsewhere or presses Escape.
   useEffect(() => {
@@ -68,7 +78,7 @@ export default function Certifications({ certificates }: { certificates: Certifi
   return <div className="cert-showcase" ref={root}>
     <div className="cert-toolbar"><p>Hover over or tap a certificate to see the details.</p><button className="cert-control" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? <Play size={15}/> : <Pause size={15}/>}{paused ? 'Play' : 'Pause'}</button></div>
     <div className="cert-viewport" role="region" aria-label="Certificates" tabIndex={0}>
-      <ul className="cert-track" data-paused={paused || open ? true : undefined} style={{ '--count': certificates.length, '--duration': `${certificates.length * 6}s` } as React.CSSProperties}>
+      <ul className="cert-track" data-paused={paused || open || !visible ? true : undefined} style={{ '--count': certificates.length, '--duration': `${certificates.length * 6}s` } as React.CSSProperties}>
         {certificates.map((certificate, index) => <li className="certificate-card" key={index} aria-labelledby={`certificate-${index}`}>{card(certificate, index, `0-${index}`)}</li>)}
         {Array.from({ length: copies - 1 }, (_, copy) => certificates.map((certificate, index) => <li className="cert-clone" aria-hidden="true" key={`${copy + 1}-${index}`}>{card(certificate, index, `${copy + 1}-${index}`, true)}</li>))}
       </ul>

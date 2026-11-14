@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Newsreader, Public_Sans } from 'next/font/google';
 import './globals.css';
 import { siteUrl } from '../lib/site';
@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   openGraph: { title: 'Sai Tharun Reddy | Developer', description: 'Java, Spring Boot, and useful web applications. Get to know me and my work.', images: ['/opengraph-image'] },
   twitter: { card: 'summary_large_image' },
 };
+// Colours the phone browser bar to match the page.
+export const viewport: Viewport = { themeColor: '#f8f9fc', colorScheme: 'light' };
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en" className={`${sans.variable} ${serif.variable}`}><body>{children}</body></html>;
 }
