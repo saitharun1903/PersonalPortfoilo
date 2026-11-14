@@ -14,5 +14,5 @@ export default function SocialLinks({ profile }: { profile: PortfolioContent['pr
     profile.leetcode && { label: 'LeetCode', href: profile.leetcode, Logo: LeetCodeLogo },
     { label: 'Email', href: `mailto:${profile.email}`, Logo: MailLogo },
   ].filter(Boolean) as { label: string; href: string; Logo: () => React.JSX.Element }[];
-  return <ul className="hero-socials">{links.map(({ label, href, Logo }) => <li key={label}><a href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel="noreferrer"><Logo/><span>{label}</span></a></li>)}</ul>;
+  return <ul className="hero-socials">{links.map(({ label, href, Logo }) => <li key={label}><a href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel="noreferrer" aria-label={label} title={label}><Logo/></a></li>)}</ul>;
 }

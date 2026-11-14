@@ -3,10 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Check, Copy, Download, Menu, X } from 'lucide-react';
 import type { PortfolioContent, Project } from '../lib/content-schema';
 
+// A floating navigation bar: a pill slides behind the current section and a thin line shows reading progress.
 export function Navigation({ profile, sections }: { profile: PortfolioContent['profile']; sections: PortfolioContent['sections'] }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('');
+  const [scrolled, setScrolled] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
+  const links = useRef<HTMLElement>(null);
+  const indicator = useRef<HTMLSpanElement>(null);
+  const progress = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id);
@@ -14,20 +19,52 @@ export function Navigation({ profile, sections }: { profile: PortfolioContent['p
     document.querySelectorAll('main section[id]').forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
+  // Scroll work is batched into one animation frame and touches only a transform.
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      progress.current?.style.setProperty('transform', `scaleX(${max > 0 ? Math.min(scrollY / max, 1) : 0})`);
+      setScrolled(scrollY > 8);
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    return () => { cancelAnimationFrame(frame); removeEventListener('scroll', onScroll); removeEventListener('resize', onScroll); };
+  }, []);
+  useEffect(() => {
+    const place = () => {
+      const pill = indicator.current;
+      const link = links.current?.querySelector<HTMLElement>('a[aria-current]');
+      if (!pill) return;
+      if (!link || !link.offsetWidth) { pill.style.opacity = '0'; return; }
+      pill.style.opacity = '1';
+      pill.style.width = `${link.offsetWidth}px`;
+      pill.style.transform = `translateX(${link.offsetLeft}px)`;
+    };
+    place();
+    addEventListener('resize', place);
+    return () => removeEventListener('resize', place);
+  }, [active]);
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(false); toggle.current?.focus(); } };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
-  return <header className="navigation">
-    <a className="wordmark" href="#home" aria-label={`${profile.brand} home`}>{profile.brand}<span>.</span></a>
-    <nav id="main-navigation" aria-label="Main navigation" className={open ? 'nav-links open' : 'nav-links'}>
+  return <header className="navigation" data-scrolled={scrolled || undefined}>
+    <a className="wordmark" href="#home" aria-label={`${profile.brand} home`}><span className="monogram" aria-hidden="true">{profile.brand.trim().charAt(0)}</span><span className="wordmark-name">{profile.brand}</span></a>
+    <nav id="main-navigation" ref={links} aria-label="Main navigation" className={open ? 'nav-links open' : 'nav-links'}>
+      <span className="nav-indicator" ref={indicator} aria-hidden="true"/>
       {(['About', 'Projects', 'Experience', 'Skills', 'Certifications'] as const).filter(label => sections[label.toLowerCase() as keyof typeof sections]).map((label) => <a key={label} href={`#${label.toLowerCase()}`} aria-current={active === label.toLowerCase() ? 'location' : undefined} onClick={() => setOpen(false)}>{label}</a>)}
       <a href="#contact" aria-current={active === 'contact' ? 'location' : undefined} onClick={() => setOpen(false)}>Contact</a>
+      {profile.resume && <a className="nav-resume" href={profile.resume} download="Sai-Tharun-Reddy-Resume.pdf" onClick={() => setOpen(false)}>Resume<Download size={17} aria-hidden="true"/></a>}
     </nav>
     <ResumeButton compact href={profile.resume} />
-    <button ref={toggle} className="menu-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
+    <button ref={toggle} className="menu-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <X size={20}/> : <Menu size={20}/>}</button>
+    <span className="nav-progress" ref={progress} aria-hidden="true"/>
   </header>;
 }
 
@@ -45,7 +82,10 @@ export function CardStack({ children }: { children: React.ReactNode }) {
     if (!stack) return;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)');
     const cards = () => Array.from(stack.querySelectorAll<HTMLElement>(':scope > .project-card'));
-    const offset = (index: number) => (innerWidth < 700 ? 12 : 24) + index * (innerWidth < 700 ? 10 : 16);
+    // Cards stop just below the sticky navigation bar.
+    const navBottom = () => { const nav = document.querySelector<HTMLElement>('.navigation'); return nav ? nav.offsetHeight + (parseFloat(getComputedStyle(nav).top) || 0) : 0; };
+    let base = 24;
+    const offset = (index: number) => base + index * (innerWidth < 700 ? 10 : 16);
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -60,6 +100,7 @@ export function CardStack({ children }: { children: React.ReactNode }) {
       });
     };
     const layout = () => {
+      base = navBottom() + (innerWidth < 700 ? 10 : 16);
       const list = cards();
       list.forEach((card, index) => card.style.setProperty('--stick', `${offset(index)}px`));
       const fits = !reduce.matches && list.length > 1 && list.every((card, index) => card.offsetHeight + offset(index) + 16 <= innerHeight);

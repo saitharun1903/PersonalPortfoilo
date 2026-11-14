@@ -33,6 +33,7 @@ export default async function Home() {
           <SocialLinks profile={profile}/>
         </div>
         {profile.portrait && <figure className="hero-portrait"><Image src={profile.portrait} alt={profile.brand} width={460} height={460} unoptimized={profile.portrait.startsWith('https:')} preload sizes="(max-width: 700px) 120px, 240px" />{profile.caption && <figcaption>{profile.caption}</figcaption>}</figure>}
+        {sections.projects && projects.length > 0 && <a className="hero-scroll" href="#projects" aria-label="Scroll to projects"><span aria-hidden="true"/></a>}
       </section>
 
       {sections.projects && <section className="section projects-section container" id="projects">
