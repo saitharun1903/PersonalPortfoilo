@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowUpRight, Award, Download, Pause, Play, X } from 'lucide-react';
+import { ArrowUpRight, Award, Download, LayoutGrid, Pause, Play, X } from 'lucide-react';
 import type { Certificate } from '../lib/content-schema';
 
 const number = (index: number) => String(index + 1).padStart(2, '0');
@@ -52,6 +52,42 @@ function ReelCard({ certificate, index, total, open, onToggle, clone }: { certif
   </div>;
 }
 
+// "View all": a gallery of every certificate in a modal. It is only built when opened,
+// so its images load on demand rather than with the page.
+function AllCertificates({ certificates }: { certificates: Certificate[] }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [shown, setShown] = useState(false);
+  const open = () => { setShown(true); requestAnimationFrame(() => dialog.current?.showModal()); };
+  return <>
+    <button className="cert-control" onClick={open} aria-haspopup="dialog"><LayoutGrid size={15} aria-hidden="true"/>View all ({certificates.length})</button>
+    <dialog ref={dialog} className="cert-dialog" aria-labelledby="all-certificates-title" onClose={() => setShown(false)} onClick={event => { if (event.target === dialog.current) dialog.current.close(); }}>
+      {shown && <>
+        <header className="cert-dialog-head">
+          <div><h2 id="all-certificates-title">All certificates</h2><p>{certificates.length} certificates and badges. Open one or download it as a PDF.</p></div>
+          <button className="dialog-close" onClick={() => dialog.current?.close()} aria-label="Close all certificates"><X size={20}/></button>
+        </header>
+        <ul className="cert-grid">
+          {certificates.map((certificate, index) => <li className="cert-grid-item" key={index}>
+            <div className="cert-grid-media">{certificate.image
+              ? <Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} unoptimized={certificate.image.startsWith('https:')} sizes="(max-width: 640px) 90vw, (max-width: 1000px) 45vw, 340px"/>
+              : <Award size={44} strokeWidth={1.2} aria-hidden="true"/>}</div>
+            <div className="cert-grid-copy">
+              <p className="cert-grid-issuer">{certificate.issuer}</p>
+              <h3>{certificate.title}</h3>
+              {certificate.date && <p className="cert-grid-date">{certificate.date}</p>}
+              <div className="cert-grid-actions">
+                {certificate.pdf && <a className="cert-button primary" href={certificate.pdf} target="_blank" rel="noreferrer">View</a>}
+                {certificate.pdf && <a className="cert-button" href={certificate.pdf} download={downloadName(certificate)} aria-label={`Download ${certificate.title} certificate${isPdf(certificate.pdf) ? ' as PDF' : ''}`}><Download size={15} aria-hidden="true"/>{isPdf(certificate.pdf) ? 'PDF' : 'Download'}</a>}
+                {certificate.verification && <a className="cert-button" href={certificate.verification} target="_blank" rel="noreferrer" aria-label={`Verify ${certificate.title}`}>Verify <ArrowUpRight size={15}/></a>}
+              </div>
+            </div>
+          </li>)}
+        </ul>
+      </>}
+    </dialog>
+  </>;
+}
+
 export default function Certifications({ certificates }: { certificates: Certificate[] }) {
   const [paused, setPaused] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
@@ -85,7 +121,7 @@ export default function Certifications({ certificates }: { certificates: Certifi
     <ReelCard certificate={certificate} index={index} total={total} clone={clone} open={open === key} onToggle={() => setOpen(current => current === key ? null : key)}/>;
 
   return <div className="cert-showcase" ref={root}>
-    <div className="cert-toolbar"><p>Hover over or tap a certificate to see the details.</p><button className="cert-control" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? <Play size={15}/> : <Pause size={15}/>}{paused ? 'Play' : 'Pause'}</button></div>
+    <div className="cert-toolbar"><p>Hover over or tap a certificate to see the details.</p><div className="cert-controls"><AllCertificates certificates={certificates}/><button className="cert-control" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? <Play size={15}/> : <Pause size={15}/>}{paused ? 'Play' : 'Pause'}</button></div></div>
     <div className="cert-viewport" role="region" aria-label="Certificates" tabIndex={0}>
       <ul className="cert-track" data-paused={paused || open || !visible ? true : undefined} style={{ '--count': certificates.length, '--duration': `${certificates.length * 6}s` } as React.CSSProperties}>
         {certificates.map((certificate, index) => <li className="certificate-card" key={index} aria-labelledby={`certificate-${index}`}>{card(certificate, index, `0-${index}`)}</li>)}
