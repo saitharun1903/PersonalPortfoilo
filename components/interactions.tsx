@@ -1,7 +1,24 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, Check, Copy, Download, Menu, X } from 'lucide-react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { ArrowUpRight, Check, Copy, Download, Menu, Moon, Sun, X } from 'lucide-react';
 import type { PortfolioContent, Project } from '../lib/content-schema';
+
+// Light/dark switch. The theme lives on <html data-theme>; an inline script in the layout sets it
+// before first paint from the saved choice or the device setting.
+const themeEvent = 'portfolio-theme';
+const currentTheme = () => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+const subscribeTheme = (notify: () => void) => { addEventListener(themeEvent, notify); return () => removeEventListener(themeEvent, notify); };
+export function ThemeToggle() {
+  const theme = useSyncExternalStore(subscribeTheme, currentTheme, () => 'light');
+  const toggle = () => {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch { /* Private mode: the choice lasts for this visit. */ }
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'dark' ? '#0c111d' : '#f8f9fc');
+    dispatchEvent(new Event(themeEvent));
+  };
+  return <button type="button" className="theme-toggle" onClick={toggle} aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'} title={theme === 'dark' ? 'Light theme' : 'Dark theme'} suppressHydrationWarning><Moon className="moon" size={19} aria-hidden="true"/><Sun className="sun" size={19} aria-hidden="true"/></button>;
+}
 
 // A floating navigation bar: a pill slides behind the current section and a thin line shows reading progress.
 export function Navigation({ profile, sections }: { profile: PortfolioContent['profile']; sections: PortfolioContent['sections'] }) {
@@ -12,6 +29,8 @@ export function Navigation({ profile, sections }: { profile: PortfolioContent['p
   const links = useRef<HTMLElement>(null);
   const indicator = useRef<HTMLSpanElement>(null);
   const progress = useRef<HTMLSpanElement>(null);
+  // Marks the page as interactive once its scripts have started (browser tests wait for this).
+  useEffect(() => { document.documentElement.dataset.ready = 'true'; }, []);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id);
@@ -62,6 +81,7 @@ export function Navigation({ profile, sections }: { profile: PortfolioContent['p
       <a href="#contact" aria-current={active === 'contact' ? 'location' : undefined} onClick={() => setOpen(false)}>Contact</a>
       {profile.resume && <a className="nav-resume" href={profile.resume} download="Sai-Tharun-Reddy-Resume.pdf" onClick={() => setOpen(false)}>Resume<Download size={17} aria-hidden="true"/></a>}
     </nav>
+    <ThemeToggle />
     <ResumeButton compact href={profile.resume} />
     <button ref={toggle} className="menu-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <X size={20}/> : <Menu size={20}/>}</button>
     <span className="nav-progress" ref={progress} aria-hidden="true"/>

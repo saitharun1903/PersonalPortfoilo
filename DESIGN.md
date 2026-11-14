@@ -6,6 +6,10 @@ Shared CSS tokens in `app/globals.css` keep the public site and admin consistent
 
 Typography: Newsreader (serif) for headings and reading text; Public Sans for navigation, links, and small meta text.
 
+## Dark theme
+
+A sun/moon button in the navigation switches themes. The theme is a `data-theme` attribute on `<html>`: an inline script in `app/layout.tsx` sets it before first paint from the saved choice (`localStorage`), or from the device setting on a first visit, so the page never flashes. Dark values override the same CSS tokens under `html[data-theme="dark"]` in `app/globals.css`: page #0c111d, cards #141b2c, text #e9edf7, links #9db0ff, filled buttons #3b5bdb. The admin always stays light.
+
 ## Layout
 
 - Navigation: a floating frosted bar that stays at the top while scrolling, with a round monogram, the name, a navy pill that slides behind the current section, a blue Resume button, and a thin line along the bottom showing reading progress. On narrow screens the links move into a solid drop-down panel. Project cards stop just below the bar.

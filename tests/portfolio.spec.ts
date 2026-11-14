@@ -42,6 +42,8 @@ test('touch layouts keep every project reachable on phones and tablets in both o
     await page.setViewportSize({ width, height });
     await page.goto(baseURL);
     await page.evaluate(() => document.fonts.ready);
+    // Taps do nothing until the page's scripts have started, so wait for that first.
+    await expect(page.locator('html')).toHaveAttribute('data-ready', 'true');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     if (width < 768) {
       await page.getByRole('button', { name: 'Open menu' }).tap();
@@ -136,6 +138,25 @@ test('reduced motion, metadata, and accessibility', async ({ page }) => {
   await expect(page.locator('.project-card').first()).toHaveCSS('position', 'static');
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(results.violations).toEqual([]);
+});
+
+test('dark theme toggles, persists, follows the device setting, and stays accessible', async ({ page, browser }) => {
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await page.getByRole('button', { name: 'Switch to dark theme' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(12, 17, 29)');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(results.violations).toEqual([]);
+  await page.getByRole('button', { name: 'Switch to light theme' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  const context = await browser.newContext({ colorScheme: 'dark' });
+  const first = await context.newPage();
+  await first.goto(test.info().project.use.baseURL!);
+  await expect(first.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await context.close();
 });
 
 test('deployed metadata, sharing image, and download headers', async ({ page, request }) => {
