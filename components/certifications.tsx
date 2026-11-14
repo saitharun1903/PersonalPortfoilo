@@ -1,11 +1,18 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowUpRight, Award, Pause, Play, X } from 'lucide-react';
+import { ArrowUpRight, Award, Download, Pause, Play, X } from 'lucide-react';
 import type { Certificate } from '../lib/content-schema';
 
 const number = (index: number) => String(index + 1).padStart(2, '0');
 const shortIssuer = (issuer: string) => issuer.split('·')[0].trim() || issuer;
+// A readable file name for downloads, e.g. "Sai-Tharun-Reddy-Programming-using-Java.pdf".
+const downloadName = (certificate: Certificate) => {
+  const extension = certificate.pdf.split('?')[0].split('.').pop()?.toLowerCase() || 'pdf';
+  const slug = certificate.title.normalize('NFKD').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `Sai-Tharun-Reddy-${slug || 'certificate'}.${extension}`;
+};
+const isPdf = (path: string) => /\.pdf(\?|$)/i.test(path);
 
 function Cover({ certificate }: { certificate: Certificate }) {
   // The whole certificate stays visible, framed between the badge and the name panel.
@@ -38,6 +45,7 @@ function ReelCard({ certificate, index, total, open, onToggle, clone }: { certif
       {certificate.description && <p className="cert-description">{certificate.description}</p>}
       {(certificate.pdf || certificate.verification) && <div className="cert-actions">
         {certificate.pdf && <a className="cert-button primary" tabIndex={focus} href={certificate.pdf} target="_blank" rel="noreferrer">View certificate</a>}
+        {certificate.pdf && <a className="cert-button" tabIndex={focus} href={certificate.pdf} download={downloadName(certificate)} aria-label={`Download ${certificate.title} certificate${isPdf(certificate.pdf) ? ' as PDF' : ''}`}><Download size={15} aria-hidden="true"/>{isPdf(certificate.pdf) ? 'PDF' : 'Download'}</a>}
         {certificate.verification && <a className="cert-button" tabIndex={focus} href={certificate.verification} target="_blank" rel="noreferrer">Verify <ArrowUpRight size={15}/></a>}
       </div>}
     </div>
