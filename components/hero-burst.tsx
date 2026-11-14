@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 // One canvas, drawn only while pixels are alive; nothing runs when idle.
 const GRID = 8;
 const SIZE = 6;
-const COLOURS = ['#c2300f', '#c2300f', '#2846c9', '#f29a6b', '#14213d'];
+const COLOURS = ['#2b4acb', '#2b4acb', '#7c93ff', '#b8c6ff', '#14213d'];
 const MAX = 900;
 
 type Pixel = { x: number; y: number; vx: number; vy: number; life: number; max: number; colour: string };
