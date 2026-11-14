@@ -1,22 +1,23 @@
 # Portfolio design direction
 
-Personal developer portfolio for recruiters and engineers. Warm and natural rather than templated: a paper-toned page with a faint grain, a serif display voice, and a monospace face for the technical details. One dark surface only, the contact panel that closes the page.
+Personal developer portfolio for recruiters and engineers. Confident and high-contrast: a warm near-black page with a faint grid and grain, an electric lime accent, a coral spark for small details, and a lime contact panel that ends the page.
 
-Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: paper #f6f1e7, deeper paper #ede5d6, card #fcf9f3, ink #1c231f, muted text #59625a, moss accent #2c5a44, deep moss #1d3f2f, clay highlight #a34a26, and line #dcd3c1. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
+Shared CSS tokens in `app/globals.css` keep the public site and admin consistent: night #0d0d0b, raised #151513 and #1c1c19, chalk text #f3f2ea, muted text #a6a59c, lime #d4ff3a, coral #ff7a4d, lines #2b2b27 and #3d3d37. The older token names (`--blue`, `--sky`, `--surface`, ...) are aliases of these so the admin screens follow the same palette.
 
-Typography: Instrument Serif for headings, with its italic in clay for the accent word of each heading; Figtree for body text; JetBrains Mono for labels, tags, and the hero keyword line.
+Typography: Bricolage Grotesque (bold, tight tracking) for headings, Hanken Grotesk for body text, JetBrains Mono for labels, tags, and the hero keyword line.
 
 ## Layout
 
-- Floating pill navigation with the active section filled in moss.
-- Hero: oversized name, mono keyword line, and the portrait in an arch with an offset moss block and a credentials card.
-- Projects: alternating two-column rows in normal document flow. Projects with a screenshot show it in a tilted browser window; projects without one get a typographic cover.
-- About, skills, experience, certifications, and GitHub share one vertical rhythm, separated by hairlines.
-- Certificates show a cover only when an image has been uploaded.
+- Floating dark pill navigation; the active section fills with lime.
+- Hero: oversized name with the surname in lime, mono keyword line, portrait in a lime-gradient frame with a glow, a "Java & Spring Boot" tag, and a credentials card.
+- Facts strip counted from the real content (projects, technologies, repositories) and a scrolling toolkit marquee.
+- Projects: full-width cards stacked in document flow, alternating sides. Screenshots sit in a browser window with a slight 3D tilt; projects without one get a large typographic cover.
+- Skills as an asymmetric bento grid (first card in lime), experience as a glowing timeline, certificates and repositories as cards.
+- Cards marked `.spot` get a soft light that follows the pointer (`PointerGlow` in `components/interactions.tsx`).
 
 ## Motion
 
-One staggered entrance in the hero, soft scroll reveals, and small hover responses. Everything is disabled under `prefers-reduced-motion`.
+A staggered hero entrance, the toolkit marquee (pauses on hover), scroll reveals, and the pointer light. Under `prefers-reduced-motion` all of it is off and the marquee becomes a static wrapped list.
 
 ## Checks
 

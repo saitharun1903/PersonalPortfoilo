@@ -80,7 +80,7 @@ test('light responsive layouts, images, and contact links', async ({ page }) => 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Sai Tharun');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Reddy');
     await expect(page.locator('.hero-headline')).toHaveText('Aspiring Backend Developer | Java & Spring Boot | SQL | AI/ML | Cloud | DSA | CSE Student');
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(246, 241, 231)');
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(13, 13, 11)');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await expect(page.locator('.email-address')).toHaveAttribute('href', 'mailto:saitharunreddy@writecode.in');
     await page.screenshot({ path: `test-results/hero-${width}.png`, animations: 'disabled' });

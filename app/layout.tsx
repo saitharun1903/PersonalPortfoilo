@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { Figtree, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
+import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { siteUrl } from '../lib/site';
-const sans = Figtree({ subsets: ['latin'], variable: '--font-sans' });
-const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif' });
+const sans = Hanken_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
+const serif = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-serif' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
