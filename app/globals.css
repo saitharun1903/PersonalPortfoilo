@@ -38,8 +38,8 @@ img { max-width: 100%; height: auto; }
 .navigation, .hero-introduction, .hero-socials, .project-category, .project-technologies, .entry-when, .repo-language, .certificate-issuer, footer, .aside, .text-link, .copy-email, .section-label, .button, .dialog-category, .resume-link, .wordmark { font-family: var(--font-sans), 'Segoe UI', sans-serif; }
 
 /* Links read as links: underlined, in one colour. */
-.text-link, .prose a, .hero-socials a, .email-address { color: var(--rust); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: #a8401c66; transition: text-decoration-color .15s; }
-.text-link:hover, .prose a:hover, .hero-socials a:hover, .email-address:hover { text-decoration-color: currentColor; }
+.text-link, .prose a, .hero-socials a span, .email-address { color: var(--rust); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: #a8401c66; transition: text-decoration-color .15s; }
+.text-link:hover, .prose a:hover, .hero-socials a:hover span, .email-address:hover { text-decoration-color: currentColor; }
 .text-link { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; min-height: 32px; }
 .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 18px; border-radius: var(--radius); font-size: 15px; text-decoration: none; transition: background .15s, border-color .15s; }
 .button.primary { background: var(--ink); color: var(--page); }
@@ -69,9 +69,10 @@ img { max-width: 100%; height: auto; }
 .hero-summary { margin-top: 28px; font-size: 21px; line-height: 1.55; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; margin-top: 28px; }
 .hero-actions .text-link { font-size: 16px; }
-.hero-socials { display: flex; flex-wrap: wrap; gap: 4px 0; margin-top: 18px; font-size: 15px; }
-.hero-socials li:not(:last-child)::after { content: '·'; margin: 0 10px; color: var(--faint); }
-.hero-socials a { display: inline-block; padding-block: 4px; }
+.hero-socials { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 18px; font-size: 15px; }
+.hero-socials a { display: inline-flex; align-items: center; gap: 8px; padding-block: 4px; text-decoration: none; }
+.hero-socials svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--ink); transition: color .15s; }
+.hero-socials a:hover svg { color: var(--rust); }
 .hero-portrait { margin-top: 8px; }
 .hero-portrait img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 25%; border-radius: 4px; background: var(--wash); }
 .hero-portrait figcaption { margin-top: 10px; font-style: italic; font-size: 16px; color: var(--muted); }
