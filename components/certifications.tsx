@@ -182,12 +182,17 @@ export default function Certifications({ certificates }: { certificates: Certifi
     if (!open) return;
     // Slide a card that opened near the edge fully into view.
     const card = viewport.current?.querySelector<HTMLElement>('.cert-reel-card[data-open]');
-    if (card) { hold(RESUME_AFTER + 1000); card.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+    // Wait for the card to finish widening first, or a wide card would still spill off the edge.
+    let reveal = 0;
+    if (card) {
+      hold(RESUME_AFTER + 1500);
+      reveal = window.setTimeout(() => card.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }), 560);
+    }
     const outside = (event: PointerEvent) => { if (!(event.target as Element).closest('.cert-reel-card[data-open]')) setOpen(null); };
     const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(null); };
     document.addEventListener('pointerdown', outside);
     document.addEventListener('keydown', escape);
-    return () => { document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', escape); };
+    return () => { clearTimeout(reveal); document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', escape); };
   }, [open]);
 
   if (certificates.length === 0) return null;
