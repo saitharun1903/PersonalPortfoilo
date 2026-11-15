@@ -42,6 +42,8 @@ test('touch layouts keep every project reachable on phones and tablets in both o
     await page.setViewportSize({ width, height });
     await page.goto(baseURL);
     await page.evaluate(() => document.fonts.ready);
+    // Taps do nothing until the page's scripts have started, so wait for that first.
+    await expect(page.locator('html')).toHaveAttribute('data-ready', 'true');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     if (width < 768) {
       await page.getByRole('button', { name: 'Open menu' }).tap();
@@ -136,6 +138,54 @@ test('reduced motion, metadata, and accessibility', async ({ page }) => {
   await expect(page.locator('.project-card').first()).toHaveCSS('position', 'static');
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(results.violations).toEqual([]);
+});
+
+test('certificates scroll on their own and by hand, then resume', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-ready', 'true');
+  const strip = page.locator('.cert-viewport');
+  await strip.scrollIntoViewIfNeeded();
+  await page.mouse.move(640, 40);
+  const left = () => strip.evaluate(element => element.scrollLeft);
+  // It moves by itself.
+  const start = await left();
+  await expect.poll(left, { timeout: 4000 }).toBeGreaterThan(start + 20);
+  // The visitor can scroll it with a trackpad or wheel, and auto-scroll waits.
+  const box = (await strip.boundingBox())!;
+  await page.mouse.move(box.x + 40, box.y + 30);
+  const before = await left();
+  await page.mouse.wheel(500, 0);
+  await expect.poll(left).toBeGreaterThan(before + 300);
+  await page.mouse.move(640, 40);
+  const held = await left();
+  await page.waitForTimeout(1200);
+  expect(Math.abs(await left() - held)).toBeLessThan(3);
+  // ...then carries on by itself.
+  await expect.poll(left, { timeout: 6000 }).toBeGreaterThan(held + 20);
+  // The arrow buttons scroll it too.
+  const beforeArrow = await left();
+  await page.getByRole('button', { name: 'Next certificates' }).click();
+  await expect.poll(async () => Math.abs(await left() - beforeArrow)).toBeGreaterThan(200);
+});
+
+test('dark theme toggles, persists, follows the device setting, and stays accessible', async ({ page, browser }) => {
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await page.getByRole('button', { name: 'Switch to dark theme' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(12, 17, 29)');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(results.violations).toEqual([]);
+  await page.getByRole('button', { name: 'Switch to light theme' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  const context = await browser.newContext({ colorScheme: 'dark' });
+  const first = await context.newPage();
+  await first.goto(test.info().project.use.baseURL!);
+  await expect(first.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await context.close();
 });
 
 test('deployed metadata, sharing image, and download headers', async ({ page, request }) => {

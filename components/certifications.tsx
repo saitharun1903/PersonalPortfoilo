@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowUpRight, Award, Download, LayoutGrid, Pause, Play, X } from 'lucide-react';
+import { ArrowUpRight, Award, ChevronLeft, ChevronRight, Download, LayoutGrid, Pause, Play, X } from 'lucide-react';
 import type { Certificate } from '../lib/content-schema';
 
 const number = (index: number) => String(index + 1).padStart(2, '0');
@@ -88,20 +88,93 @@ function AllCertificates({ certificates }: { certificates: Certificate[] }) {
   </>;
 }
 
+const GAP = 16;
+const SPEED = 50; // pixels per second
+const RESUME_AFTER = 2500; // ms after the visitor stops scrolling
+
 export default function Certifications({ certificates }: { certificates: Certificate[] }) {
   const [paused, setPaused] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
   const root = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(true);
+  const viewport = useRef<HTMLDivElement>(null);
+  // Live values for the animation loop, kept in refs so the loop never restarts.
+  const live = useRef({ paused: false, open: false, visible: true, hovering: false, holdUntil: 0 });
+  useEffect(() => { live.current.paused = paused; live.current.open = Boolean(open); }, [paused, open]);
+  // Wait before resuming; a later, shorter wait never cuts an earlier, longer one short.
+  const hold = (ms = RESUME_AFTER) => { live.current.holdUntil = Math.max(live.current.holdUntil, performance.now() + ms); };
 
-  // The reel only animates while it is on screen.
+  // Auto-scroll by moving the real scroll position, so swiping, trackpads, the wheel, keys and
+  // dragging all work at any time. The strip holds three copies of the set and jumps by one set
+  // when it nears either end, so it loops forever in both directions.
   useEffect(() => {
-    const element = root.current;
+    const element = viewport.current;
+    const section = root.current;
+    if (!element || !section) return;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const setWidth = () => certificates.length * ((parseFloat(getComputedStyle(element).getPropertyValue('--card-w')) || 300) + GAP);
+    let position = 0;
+    let frame = 0;
+    let last = 0;
+    let settle = 0;
+    const wrap = () => {
+      if (reduce.matches) return;
+      const width = setWidth();
+      if (element.scrollLeft < width * 0.5) element.scrollLeft += width;
+      else if (element.scrollLeft > width * 1.5) element.scrollLeft -= width;
+      position = element.scrollLeft;
+    };
+    const tick = (time: number) => {
+      const step = Math.min((time - (last || time)) / 1000, 0.05);
+      last = time;
+      const state = live.current;
+      if (!reduce.matches && state.visible && !state.paused && !state.open && !state.hovering && time > state.holdUntil) {
+        position += SPEED * step;
+        element.scrollLeft = position;
+        if (position > setWidth() * 1.5) wrap();
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    const onScroll = () => {
+      // A scroll the loop did not make is the visitor's: follow it and wait before resuming.
+      if (Math.abs(element.scrollLeft - position) > 2) { position = element.scrollLeft; hold(); }
+      clearTimeout(settle);
+      settle = window.setTimeout(wrap, 140);
+    };
+    const visibility = new IntersectionObserver(([entry]) => { live.current.visible = entry.isIntersecting; }, { rootMargin: '100px 0px' });
+    visibility.observe(section);
+    const start = () => { element.scrollLeft = reduce.matches ? 0 : setWidth(); position = element.scrollLeft; };
+    start();
+    const resize = new ResizeObserver(wrap);
+    resize.observe(element);
+    element.addEventListener('scroll', onScroll, { passive: true });
+    reduce.addEventListener('change', start);
+    frame = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(frame); clearTimeout(settle); visibility.disconnect(); resize.disconnect(); element.removeEventListener('scroll', onScroll); reduce.removeEventListener('change', start); };
+  }, [certificates.length]);
+
+  // Mouse users can drag the strip; a drag does not count as a click on a card.
+  const dragState = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || (event.target as Element).closest('a, .cert-info button')) return;
+    dragState.current = { x: event.clientX, left: event.currentTarget.scrollLeft, moved: false };
+    hold();
+  };
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const state = dragState.current;
+    if (!state) return;
+    const distance = event.clientX - state.x;
+    if (!state.moved && Math.abs(distance) > 6) { state.moved = true; setDragging(true); event.currentTarget.setPointerCapture(event.pointerId); }
+    if (state.moved) { event.currentTarget.scrollLeft = state.left - distance; hold(); }
+  };
+  const endDrag = () => { if (dragState.current?.moved) setTimeout(() => setDragging(false), 0); dragState.current = null; };
+  const scrollByCards = (direction: 1 | -1) => {
+    const element = viewport.current;
     if (!element) return;
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { rootMargin: '100px 0px' });
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+    hold(RESUME_AFTER + 800);
+    const card = (parseFloat(getComputedStyle(element).getPropertyValue('--card-w')) || 300) + GAP;
+    element.scrollBy({ left: direction * card * (element.clientWidth > 900 ? 2 : 1), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  };
 
   // A tapped card closes again when the visitor taps elsewhere or presses Escape.
   useEffect(() => {
@@ -114,16 +187,26 @@ export default function Certifications({ certificates }: { certificates: Certifi
   }, [open]);
 
   if (certificates.length === 0) return null;
-  // Enough copies of the set that the reel never shows a gap on wide screens.
-  const copies = Math.max(2, Math.ceil(2200 / (certificates.length * 316)) + 1);
+  // Three copies of the set (more on very wide screens) so the loop never shows a gap.
+  const copies = Math.max(3, Math.ceil(2400 / (certificates.length * 316)) + 2);
   const total = number(certificates.length - 1);
   const card = (certificate: Certificate, index: number, key: string, clone = false) =>
-    <ReelCard certificate={certificate} index={index} total={total} clone={clone} open={open === key} onToggle={() => setOpen(current => current === key ? null : key)}/>;
+    <ReelCard certificate={certificate} index={index} total={total} clone={clone} open={open === key} onToggle={() => { if (!dragging) setOpen(current => current === key ? null : key); }}/>;
 
   return <div className="cert-showcase" ref={root}>
-    <div className="cert-toolbar"><p>Hover over or tap a certificate to see the details.</p><div className="cert-controls"><AllCertificates certificates={certificates}/><button className="cert-control" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? <Play size={15}/> : <Pause size={15}/>}{paused ? 'Play' : 'Pause'}</button></div></div>
-    <div className="cert-viewport" role="region" aria-label="Certificates" tabIndex={0}>
-      <ul className="cert-track" data-paused={paused || open || !visible ? true : undefined} style={{ '--count': certificates.length, '--duration': `${certificates.length * 6}s` } as React.CSSProperties}>
+    <div className="cert-toolbar"><p>Scroll, swipe or drag to browse. Hover over or tap a certificate for details.</p><div className="cert-controls">
+      <button type="button" className="cert-control cert-arrow" onClick={() => scrollByCards(-1)} aria-label="Previous certificates"><ChevronLeft size={18}/></button>
+      <button type="button" className="cert-control cert-arrow" onClick={() => scrollByCards(1)} aria-label="Next certificates"><ChevronRight size={18}/></button>
+      <AllCertificates certificates={certificates}/>
+      <button className="cert-control" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? <Play size={15}/> : <Pause size={15}/>}{paused ? 'Play' : 'Pause'}</button>
+    </div></div>
+    <div className="cert-viewport" ref={viewport} role="region" aria-label="Certificates" tabIndex={0} data-dragging={dragging || undefined}
+      onPointerEnter={event => { if (event.pointerType === 'mouse') live.current.hovering = true; }}
+      onPointerLeave={() => { live.current.hovering = false; hold(600); }}
+      onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag}
+      onWheel={event => { if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) hold(); }}
+      onTouchStart={() => hold()} onKeyDown={() => hold()} onFocus={() => hold()}>
+      <ul className="cert-track">
         {certificates.map((certificate, index) => <li className="certificate-card" key={index} aria-labelledby={`certificate-${index}`}>{card(certificate, index, `0-${index}`)}</li>)}
         {Array.from({ length: copies - 1 }, (_, copy) => certificates.map((certificate, index) => <li className="cert-clone" aria-hidden="true" key={`${copy + 1}-${index}`}>{card(certificate, index, `${copy + 1}-${index}`, true)}</li>))}
       </ul>

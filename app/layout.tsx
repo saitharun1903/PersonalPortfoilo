@@ -13,7 +13,9 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 };
 // Colours the phone browser bar to match the page.
-export const viewport: Viewport = { themeColor: '#f8f9fc', colorScheme: 'light' };
+export const viewport: Viewport = { themeColor: '#f8f9fc' };
+// Runs before first paint so the page never flashes the wrong theme. The admin always stays light.
+const themeScript = `(function(){try{if(location.pathname.indexOf('/admin')===0)return;var t=localStorage.getItem('theme');if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;if(t==='dark'){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#0c111d')}}catch(e){}})()`;
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={`${sans.variable} ${serif.variable}`}><body>{children}</body></html>;
+  return <html lang="en" className={`${sans.variable} ${serif.variable}`} suppressHydrationWarning><body><script dangerouslySetInnerHTML={{ __html: themeScript }}/>{children}</body></html>;
 }

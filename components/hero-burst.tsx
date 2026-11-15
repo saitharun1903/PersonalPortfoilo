@@ -60,18 +60,20 @@ export default function HeroBurst() {
       const box = element.getBoundingClientRect();
       const x = event.clientX - box.left;
       const y = event.clientY - box.top;
+      // The darkest square would vanish on the dark theme, so it becomes white there.
+      const palette = document.documentElement.dataset.theme === 'dark' ? COLOURS.map(colour => colour === '#14213d' ? '#ffffff' : colour) : COLOURS;
       const ring = 64;
       for (let index = 0; index < ring; index++) {
         const angle = (index / ring) * Math.PI * 2 + Math.random() * 0.12;
         const speed = 300 + Math.random() * 240;
         const max = 0.55 + Math.random() * 0.45;
-        pixels.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: max, max, colour: COLOURS[(Math.random() * COLOURS.length) | 0] });
+        pixels.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: max, max, colour: palette[(Math.random() * palette.length) | 0] });
       }
       for (let index = 0; index < 26; index++) {
         const angle = Math.random() * Math.PI * 2;
         const speed = 60 + Math.random() * 160;
         const max = 0.35 + Math.random() * 0.4;
-        pixels.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: max, max, colour: COLOURS[(Math.random() * COLOURS.length) | 0] });
+        pixels.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: max, max, colour: palette[(Math.random() * palette.length) | 0] });
       }
       if (pixels.length > MAX) pixels.splice(0, pixels.length - MAX);
       if (!frame) frame = requestAnimationFrame(draw);
