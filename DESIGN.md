@@ -28,6 +28,10 @@ A sun/moon button in the navigation switches themes. The theme is a `data-theme`
 
 The project card stack, the certificate reel, and the click burst are the moving parts. Elsewhere only colour and underline change on hover. Nothing animates on load. Under `prefers-reduced-motion` the project cards do not stack, the certificate reel becomes a normal horizontal scroll, and clicks make no burst.
 
+## Performance
+
+The home page and the sharing image are statically generated and served from the cache (`revalidate = 300`). The Supabase content fetch is cached under the `portfolio-content` tag; publishing in the admin calls `updateTag` and `revalidatePath('/')`, so changes appear on the next visit, and the page also refreshes in the background at most every 5 minutes. Certificate images load lazily as they scroll near. Measured on a throttled phone (4× CPU, slow 4G): first-load images 285 KB → 39 KB, requests 28 → 18, full load 3.5 s → 2.3 s, layout shift 0.
+
 ## Checks
 
 Contrast is checked with axe (WCAG 2.1 AA) alongside keyboard, touch, and responsive browser tests from 320px to 1440px.

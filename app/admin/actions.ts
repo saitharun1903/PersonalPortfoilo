@@ -1,8 +1,8 @@
 'use server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { contentSchema } from '../../lib/content-schema';
-import { backendConfigured, ownerDatabase, sessionDatabase } from '../../lib/supabase';
+import { CONTENT_TAG, backendConfigured, ownerDatabase, sessionDatabase } from '../../lib/supabase';
 
 export async function signIn(_previous: { error: string }, form: FormData) {
   if (!backendConfigured()) return { error: 'Connect Supabase before signing in.' };
@@ -34,7 +34,10 @@ export async function saveContent(input: unknown, version: number) {
       : db.from('portfolio_content').update({ document: parsed.data }).eq('id', 1).eq('version', version);
     const { data, error } = await query.select('version, updated_at').maybeSingle();
     if (error || !data) return { error: 'Save was not applied. Another tab may have updated the portfolio, or the connection failed. Keep your edits, then reload to get the current version.' };
+    // Show the new content on the next visit instead of waiting for the cache to expire.
+    updateTag(CONTENT_TAG);
     revalidatePath('/');
+    revalidatePath('/opengraph-image');
     revalidatePath('/admin');
     return { version: data.version as number, savedAt: data.updated_at as string };
   } catch (error) { return { error: error instanceof Error ? error.message : 'Unable to save. Your edits remain in this window.' }; }

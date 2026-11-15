@@ -3,13 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+export const CONTENT_TAG = 'portfolio-content';
+
 export function backendConfigured() {
   return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
 }
 export function publicDatabase() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, {
     auth: { persistSession: false, autoRefreshToken: false },
-    global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store', signal: AbortSignal.timeout(8000) }) },
+    // Cached and tagged so the public page can be served statically; publishing calls updateTag.
+    global: { fetch: (input, init) => fetch(input, { ...init, next: { revalidate: 300, tags: [CONTENT_TAG] }, signal: AbortSignal.timeout(8000) }) },
   });
 }
 export async function sessionDatabase() {

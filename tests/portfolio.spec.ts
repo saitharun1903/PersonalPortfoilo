@@ -88,7 +88,8 @@ test('light responsive layouts, images, and contact links', async ({ page }) => 
     await page.screenshot({ path: `test-results/hero-${width}.png`, animations: 'disabled' });
     // Reach every project through its real document position and check loaded images.
     await page.locator('#contact').scrollIntoViewIfNeeded();
-    expect(await page.locator('img').evaluateAll((images) => images.every((image) => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0))).toBeTruthy();
+    // Images that load immediately must be complete; lazy ones load when scrolled near. None may be broken.
+    expect(await page.locator('img').evaluateAll((images) => images.every((image) => image instanceof HTMLImageElement && (image.loading === 'lazy' ? !(image.complete && image.currentSrc && image.naturalWidth === 0) : image.complete && image.naturalWidth > 0)))).toBeTruthy();
   }
   expect(errors).toEqual([]);
   await expect(page.locator('.hero')).not.toContainText('I build software');
@@ -138,6 +139,19 @@ test('reduced motion, metadata, and accessibility', async ({ page }) => {
   await expect(page.locator('.project-card').first()).toHaveCSS('position', 'static');
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(results.violations).toEqual([]);
+});
+
+test('certificate images load when scrolled into view', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await expect(page.locator('.certificate-card img').first()).toHaveAttribute('loading', 'lazy');
+  await page.locator('#certifications').scrollIntoViewIfNeeded();
+  // The strip starts on its middle copy, so check whichever certificate is actually on screen.
+  const visibleLoaded = () => page.locator('.cert-track img').evaluateAll((images: HTMLImageElement[]) => {
+    const onScreen = images.filter(image => { const r = image.getBoundingClientRect(); return r.right > 0 && r.left < innerWidth && r.bottom > 0 && r.top < innerHeight; });
+    return onScreen.length > 0 && onScreen.every(image => image.complete && image.naturalWidth > 0);
+  });
+  await expect.poll(visibleLoaded, { timeout: 8000 }).toBe(true);
 });
 
 test('certificates scroll on their own and by hand, then resume', async ({ page }) => {
