@@ -29,7 +29,7 @@ const label = (key: string) => labels[key] || key.replace(/([A-Z])/g, ' $1').rep
 const guides: Record<Section, string> = {
   profile: 'Your name, photo, headline, contact links and resume. These appear in the introduction, navigation and footer.',
   copy: 'Section titles and short descriptions across the page, plus the title and description search engines show.',
-  projects: 'Each project is a card in the stacking deck. Drag the order with the arrows; upload a screenshot to replace the title poster.',
+  projects: 'Each project is a card in the stacking deck. Reorder with Up and Down; upload a screenshot to replace the title poster.',
   certifications: 'Certificates in the sliding reel and the View all gallery. Upload the certificate image and its PDF; if you only have an image, a PDF is made for you.',
   about: 'The first paragraph appears in the introduction; the rest appear in the About section.',
   skills: 'Each group is a row in the Skills section.',

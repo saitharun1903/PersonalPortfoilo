@@ -219,7 +219,7 @@ a.project-media:hover { transform: translateY(-5px); box-shadow: 0 34px 60px -30
 @media (hover: hover) { .cert-reel-card:hover .cert-frame img { transform: scale(1.03); } }
 .cert-poster { display: flex; flex-direction: column; justify-content: flex-start; gap: 16px; padding: 64px 22px 0; background: radial-gradient(#ffffff2e 1.4px, transparent 1.6px) 0 0 / 16px 16px, radial-gradient(130% 90% at 100% 0%, #ffffff33, transparent 60%), var(--tone); color: #fff; filter: none; }
 .cert-poster svg { width: 52px; height: 52px; color: #fff; }
-.cert-poster span { font-family: var(--font-serif), Georgia, serif; font-style: italic; font-size: 38px; line-height: 1; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.cert-poster span { font-family: var(--font-serif), Georgia, serif; font-style: italic; font-size: 38px; line-height: 1; letter-spacing: -.02em; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 .cert-badge { position: absolute; top: 14px; left: 14px; max-width: calc(100% - 28px); padding: 6px 11px; border-radius: 999px; background: var(--card); color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cert-panel { position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 16px 16px 14px; border-radius: 10px; background: var(--card); box-shadow: 0 10px 24px -14px #14213d80; transition: opacity .3s; }
 .cert-panel h3 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-sans), sans-serif; font-size: 18px; font-weight: 800; letter-spacing: .01em; line-height: 1.15; text-transform: uppercase; color: var(--ink); overflow-wrap: anywhere; }
@@ -327,8 +327,10 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
 .dialog-category { font-size: 14px; color: var(--muted); padding-right: 40px; }
 .project-dialog h2 { font-size: 32px; margin: 6px 0 14px; overflow-wrap: anywhere; }
 .project-dialog > p:not(.dialog-category) { font-size: 18px; }
-.project-dialog ul { margin: 20px 0; display: grid; gap: 8px; }
-.project-dialog li { display: flex; align-items: flex-start; gap: 10px; font-size: 17px; line-height: 1.5; }
+.project-dialog ul { margin: 20px 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.project-dialog li { display: flex; align-items: flex-start; gap: 10px; min-width: 0; font-size: 17px; line-height: 1.5; overflow-wrap: anywhere; }
+/* Long words from the admin wrap instead of widening the popup. */
+.project-dialog > p, .project-dialog .tags span { overflow-wrap: anywhere; min-width: 0; }
 .project-dialog li svg { color: var(--accent); flex-shrink: 0; margin-top: 4px; }
 .project-dialog .tags { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 24px; font-family: var(--font-sans), sans-serif; font-size: 14px; color: var(--muted); }
 .dialog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
@@ -453,3 +455,8 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
 }
 @media (max-width: 400px) { .cert-count { display: none; } }
 @media (max-width: 360px) { .cert-controls { flex-wrap: wrap; } }
+/* Content from the admin can be any length: keep it inside the screen. */
+main, footer { overflow-wrap: anywhere; }
+.wordmark { min-width: 0; }
+.wordmark-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hero-portrait figcaption, .hero-copy, .hero-name, .hero-headline, .hero-summary { min-width: 0; overflow-wrap: anywhere; }
