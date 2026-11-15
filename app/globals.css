@@ -101,7 +101,7 @@ img { max-width: 100%; height: auto; }
 .section-label { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 .wordmark { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; text-decoration: none; letter-spacing: -.01em; color: var(--ink); white-space: nowrap; }
 .wordmark > span:not([class]) { color: var(--accent); }
-.monogram { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; background: linear-gradient(135deg, var(--fill), var(--navy)); color: #fff; font-family: var(--font-serif), Georgia, serif; font-size: 19px; font-weight: 500; box-shadow: inset 0 1px 0 #ffffff40; }
+.signature-logo { flex-shrink: 0; width: auto; height: 36px; aspect-ratio: 146 / 92; color: var(--ink); }
 
 /* Header: a floating frosted bar that stays at the top while scrolling. */
 .navigation { position: sticky; top: 12px; z-index: 40; display: flex; align-items: center; gap: 16px; width: min(1040px, calc(100% - 32px)); height: 60px; margin: 12px auto 0; padding: 0 8px 0 12px; border: 1px solid var(--glass-border); border-radius: 999px; background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%); box-shadow: 0 0 0 1px #14213d0d, 0 8px 24px -16px #14213d40; font-size: 15px; transition: box-shadow .25s, background .25s; }
@@ -359,7 +359,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   .container { width: calc(100% - 40px); }
   .navigation { width: calc(100% - 24px); height: 56px; top: 10px; margin-top: 10px; padding: 0 6px 0 8px; }
   .wordmark { font-size: 15px; }
-  .monogram { width: 32px; height: 32px; font-size: 17px; }
+  .signature-logo { height: 32px; }
   .resume-link { min-height: 40px; padding: 0 14px; }
   .hero { grid-template-columns: 1fr; gap: 0; padding: 24px 0 88px; }
   .hero-portrait { order: -1; display: flex; align-items: center; gap: 14px; margin: 0 0 24px; }
@@ -460,3 +460,7 @@ main, footer { overflow-wrap: anywhere; }
 .wordmark { min-width: 0; }
 .wordmark-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hero-portrait figcaption, .hero-copy, .hero-name, .hero-headline, .hero-summary { min-width: 0; overflow-wrap: anywhere; }
+
+/* Footer: the signature logo sits before the copyright line. */
+.footer-brand { display: inline-flex; align-items: center; gap: 10px; }
+.footer-brand .signature-logo { height: 28px; }

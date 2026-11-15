@@ -6,6 +6,7 @@ import ProjectStack from '../components/project-stack';
 import Certifications from '../components/certifications';
 import SocialLinks from '../components/social-links';
 import HeroBurst from '../components/hero-burst';
+import Signature from '../components/signature';
 import { getContent } from '../lib/content';
 
 // Served from the cache and rebuilt in the background at most every 5 minutes;
@@ -87,7 +88,7 @@ export default async function Home() {
         </div>
       </section>
     </main>
-    <footer className="container"><span>© {new Date().getFullYear()} {profile.name}</span><div className="footer-links">{profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>}{profile.github && <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>}<a href="#home" aria-label="Back to top"><ArrowUp size={16}/></a></div></footer>
+    <footer className="container"><span className="footer-brand"><Signature className="signature-logo"/>© {new Date().getFullYear()} {profile.name}</span><div className="footer-links">{profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>}{profile.github && <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>}<a href="#home" aria-label="Back to top"><ArrowUp size={16}/></a></div></footer>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: profile.name, jobTitle: profile.jobTitle, sameAs: [profile.github, profile.linkedin].filter(Boolean), alumniOf: { '@type': 'CollegeOrUniversity', name: profile.institution } }).replace(/</g, '\\u003c') }}/>
   </>;
 }

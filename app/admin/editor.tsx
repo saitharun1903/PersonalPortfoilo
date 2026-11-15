@@ -6,6 +6,7 @@ import { ArrowDown, ArrowUp, ArrowUpRight, Check, Copy, FileText, FileUp, Images
 import type { PortfolioContent } from '../../lib/content-schema';
 import { createUpload, deleteFile, listFiles, saveContent, signOut } from './actions';
 import { MAX_UPLOAD_BYTES, imageToPdf, isImageUrl, isPdfUrl, optimizeImage } from './media';
+import Signature from '../../components/signature';
 
 type Value = string | boolean | Value[] | { [key: string]: Value };
 type Section = keyof PortfolioContent | 'media';
@@ -246,7 +247,7 @@ export default function Editor({ initial, saved, initialVersion, savedAt }: { in
 
   return <main className="admin-shell">
     <aside className="admin-sidebar">
-      <Link className="admin-brand" href="/" target="_blank" rel="noreferrer"><span className="monogram" aria-hidden="true">{content.profile.brand.trim().charAt(0) || 'S'}</span><span>{content.profile.brand}<small>Portfolio admin</small></span></Link>
+      <Link className="admin-brand" href="/" target="_blank" rel="noreferrer"><Signature className="signature-logo"/><span>{content.profile.brand}<small>Portfolio admin</small></span></Link>
       <nav aria-label="Admin sections">{order.map(key => <button type="button" key={key} aria-current={active === key ? 'page' : undefined} disabled={uploadBusy || pending} onClick={() => { setActive(key); window.scrollTo({ top: 0 }); }}>{label(key)}{count(key) !== null && <span>{count(key)}</span>}</button>)}</nav>
       <div className="sidebar-foot"><a className="admin-button" href="/" target="_blank" rel="noreferrer"><ArrowUpRight size={16}/>View live site</a><form action={signOut}><button className="admin-button" disabled={pending} onClick={event => { if (dirty && !window.confirm('Leave without publishing your changes?')) event.preventDefault(); }}><LogOut size={16}/>Sign out</button></form></div>
     </aside>
