@@ -8,7 +8,9 @@ import SocialLinks from '../components/social-links';
 import HeroBurst from '../components/hero-burst';
 import { getContent } from '../lib/content';
 
-export const dynamic = 'force-dynamic';
+// Served from the cache and rebuilt in the background at most every 5 minutes;
+// publishing from the admin refreshes it immediately (see app/admin/actions.ts).
+export const revalidate = 300;
 export async function generateMetadata(): Promise<Metadata> {
   const { copy } = await getContent();
   return { title: copy.seoTitle, description: copy.seoDescription, openGraph: { title: copy.seoTitle, description: copy.seoDescription, images: ['/opengraph-image'] } };

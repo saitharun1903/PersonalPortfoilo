@@ -16,7 +16,7 @@ const isPdf = (path: string) => /\.pdf(\?|$)/i.test(path);
 
 function Cover({ certificate }: { certificate: Certificate }) {
   // The whole certificate stays visible, framed between the badge and the name panel.
-  if (certificate.image) return <div className="cert-cover cert-frame"><Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} loading="eager" unoptimized={certificate.image.startsWith('https:')} sizes="(max-width: 700px) 240px, 280px"/></div>;
+  if (certificate.image) return <div className="cert-cover cert-frame"><Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} loading="lazy" decoding="async" unoptimized={certificate.image.startsWith('https:')} sizes="(max-width: 700px) 240px, 280px"/></div>;
   return <div className="cert-cover cert-poster" aria-hidden="true"><Award strokeWidth={1.1}/><span>{certificate.title}</span></div>;
 }
 
@@ -59,7 +59,7 @@ function AllCertificates({ certificates }: { certificates: Certificate[] }) {
   const [shown, setShown] = useState(false);
   const open = () => { setShown(true); requestAnimationFrame(() => dialog.current?.showModal()); };
   return <>
-    <button className="cert-control" onClick={open} aria-haspopup="dialog"><LayoutGrid size={15} aria-hidden="true"/>View all ({certificates.length})</button>
+    <button className="cert-control" onClick={open} aria-haspopup="dialog"><LayoutGrid size={15} aria-hidden="true"/>View all<span className="cert-count"> ({certificates.length})</span></button>
     <dialog ref={dialog} className="cert-dialog" aria-labelledby="all-certificates-title" onClose={() => setShown(false)} onClick={event => { if (event.target === dialog.current) dialog.current.close(); }}>
       {shown && <>
         <header className="cert-dialog-head">
@@ -118,7 +118,8 @@ export default function Certifications({ certificates }: { certificates: Certifi
     let last = 0;
     let settle = 0;
     const wrap = () => {
-      if (reduce.matches) return;
+      // Never jump while a certificate is open, or the open card would leave the screen.
+      if (reduce.matches || live.current.open) return;
       const width = setWidth();
       if (element.scrollLeft < width * 0.5) element.scrollLeft += width;
       else if (element.scrollLeft > width * 1.5) element.scrollLeft -= width;
@@ -179,6 +180,9 @@ export default function Certifications({ certificates }: { certificates: Certifi
   // A tapped card closes again when the visitor taps elsewhere or presses Escape.
   useEffect(() => {
     if (!open) return;
+    // Slide a card that opened near the edge fully into view.
+    const card = viewport.current?.querySelector<HTMLElement>('.cert-reel-card[data-open]');
+    if (card) { hold(RESUME_AFTER + 1000); card.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
     const outside = (event: PointerEvent) => { if (!(event.target as Element).closest('.cert-reel-card[data-open]')) setOpen(null); };
     const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(null); };
     document.addEventListener('pointerdown', outside);
