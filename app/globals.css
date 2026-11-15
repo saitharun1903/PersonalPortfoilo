@@ -200,12 +200,13 @@ a.project-media:hover { transform: translateY(-5px); box-shadow: 0 34px 60px -30
 .cert-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-bottom: 22px; font-family: var(--font-sans), sans-serif; font-size: 14px; color: var(--muted); }
 .cert-control { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 1px solid var(--ink); border-radius: 999px; font-family: var(--font-sans), sans-serif; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); transition: background .15s, color .15s; }
 .cert-control:hover { background: var(--solid); border-color: var(--solid); color: #fff; }
-.cert-viewport { width: 100vw; margin-left: calc(50% - 50vw); overflow: hidden; padding-block: 6px 26px; }
+.cert-viewport { width: 100vw; margin-left: calc(50% - 50vw); overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none; padding-block: 6px 26px; cursor: grab; }
+.cert-viewport::-webkit-scrollbar { display: none; }
+.cert-viewport[data-dragging] { cursor: grabbing; user-select: none; }
+.cert-viewport[data-dragging] .cert-reel-card { pointer-events: none; }
 .cert-viewport:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 /* The reel moves by exactly one set of cards (in pixels), so a widening card never makes it jump. */
-.cert-track { display: flex; gap: 16px; width: max-content; padding-left: 16px; animation: cert-slide var(--duration, 30s) linear infinite; }
-.cert-track[data-paused], .cert-viewport:hover .cert-track, .cert-viewport:focus-within .cert-track { animation-play-state: paused; }
-@keyframes cert-slide { to { transform: translate3d(calc(-1 * var(--count, 4) * (var(--card-w) + 16px)), 0, 0); } }
+.cert-track { display: flex; gap: 16px; width: max-content; padding-inline: 16px; margin: 0; }
 .cert-track > li { flex: 0 0 auto; --tone: linear-gradient(135deg, var(--fill), var(--navy)); }
 .cert-reel-card { position: relative; width: var(--card-w); height: var(--cert-h); overflow: hidden; contain: layout paint; border-radius: 14px; background: var(--card); color: var(--ink); font-family: var(--font-sans), sans-serif; box-shadow: 0 1px 0 #14213d0f, 0 18px 40px -26px #14213d73; transition: width .5s cubic-bezier(.2, .7, .2, 1); }
 .cert-face { position: absolute; inset: 0 auto 0 0; width: var(--card-w); background: var(--tone); }
@@ -258,6 +259,7 @@ a.project-media:hover { transform: translateY(-5px); box-shadow: 0 34px 60px -30
 
 /* "View all" certificates gallery */
 .cert-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.cert-arrow { width: 44px; padding: 0; justify-content: center; }
 .cert-dialog { width: min(1120px, calc(100% - 24px)); max-height: calc(100dvh - 32px); padding: 0; overflow: auto; overscroll-behavior: contain; border: 1px solid var(--line); border-radius: 24px; background: var(--page); color: var(--ink); box-shadow: 0 40px 100px -30px #14213d80; }
 .cert-dialog::backdrop { background: #14213d73; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
 .cert-dialog[open] { animation: cert-dialog-in .3s cubic-bezier(.2, .7, .2, 1); }
@@ -403,7 +405,6 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .cert-viewport { overflow-x: auto; }
   .cert-clone { display: none; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }

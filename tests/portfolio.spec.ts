@@ -140,6 +140,35 @@ test('reduced motion, metadata, and accessibility', async ({ page }) => {
   expect(results.violations).toEqual([]);
 });
 
+test('certificates scroll on their own and by hand, then resume', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-ready', 'true');
+  const strip = page.locator('.cert-viewport');
+  await strip.scrollIntoViewIfNeeded();
+  await page.mouse.move(640, 40);
+  const left = () => strip.evaluate(element => element.scrollLeft);
+  // It moves by itself.
+  const start = await left();
+  await expect.poll(left, { timeout: 4000 }).toBeGreaterThan(start + 20);
+  // The visitor can scroll it with a trackpad or wheel, and auto-scroll waits.
+  const box = (await strip.boundingBox())!;
+  await page.mouse.move(box.x + 40, box.y + 30);
+  const before = await left();
+  await page.mouse.wheel(500, 0);
+  await expect.poll(left).toBeGreaterThan(before + 300);
+  await page.mouse.move(640, 40);
+  const held = await left();
+  await page.waitForTimeout(1200);
+  expect(Math.abs(await left() - held)).toBeLessThan(3);
+  // ...then carries on by itself.
+  await expect.poll(left, { timeout: 6000 }).toBeGreaterThan(held + 20);
+  // The arrow buttons scroll it too.
+  const beforeArrow = await left();
+  await page.getByRole('button', { name: 'Next certificates' }).click();
+  await expect.poll(async () => Math.abs(await left() - beforeArrow)).toBeGreaterThan(200);
+});
+
 test('dark theme toggles, persists, follows the device setting, and stays accessible', async ({ page, browser }) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
