@@ -19,6 +19,9 @@ export const getContent = cache(async () => {
 
 // Upgrades applied to saved content on the live page. The admin uses the same function,
 // so the editor always starts from exactly what visitors see.
+// Bundled certificates added after the first set was published (newest first).
+const ADDED_CERTIFICATES = ['/certificates/nptel-software-project-management.webp'];
+
 export function normalizeContent(source: PortfolioContent): PortfolioContent {
   const content = structuredClone(source);
   // Correct the original seed's technology label without replacing owner edits.
@@ -45,6 +48,13 @@ export function normalizeContent(source: PortfolioContent): PortfolioContent {
   // Replace the original sample certificates with the real ones until the owner adds their own.
   const isSample = (certificate: (typeof content.certifications)[number]) => /^sample\b/i.test(certificate.issuer) || /^your certification\b/i.test(certificate.title);
   if (content.certifications.length > 0 && content.certifications.every(isSample)) content.certifications = defaultContent.certifications;
+  // Add certificates bundled after the owner first published, but only while their list is still exactly
+  // the bundled set from before, so a list they have edited themselves is never touched.
+  const bundled = defaultContent.certifications;
+  const added = bundled.filter(certificate => ADDED_CERTIFICATES.includes(certificate.image));
+  const earlier = bundled.filter(certificate => !ADDED_CERTIFICATES.includes(certificate.image)).map(certificate => certificate.image);
+  const images = content.certifications.map(certificate => certificate.image);
+  if (images.length === earlier.length && earlier.every(image => images.includes(image))) content.certifications = [...added, ...content.certifications];
   // The Deloitte certificate is dated June 2025; correct the untouched seed year.
   for (const item of content.experience) {
     if (item.title === 'Technology Job Simulation' && item.kind === '2024' && item.organization.startsWith('Deloitte')) item.kind = '2025';

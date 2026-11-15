@@ -14,9 +14,11 @@ const downloadName = (certificate: Certificate) => {
 };
 const isPdf = (path: string) => /\.pdf(\?|$)/i.test(path);
 
+// Certificate images are served as they are: the bundled ones are already small 1000px WebP files and
+// admin uploads are resized before upload, so running them through the image optimiser only adds delay.
 function Cover({ certificate }: { certificate: Certificate }) {
   // The whole certificate stays visible, framed between the badge and the name panel.
-  if (certificate.image) return <div className="cert-cover cert-frame"><Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} loading="lazy" decoding="async" unoptimized={certificate.image.startsWith('https:')} sizes="(max-width: 700px) 240px, 280px"/></div>;
+  if (certificate.image) return <div className="cert-cover cert-frame"><Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} loading="lazy" decoding="async" unoptimized/></div>;
   return <div className="cert-cover cert-poster" aria-hidden="true"><Award strokeWidth={1.1}/><span>{certificate.title}</span></div>;
 }
 
@@ -52,8 +54,9 @@ function ReelCard({ certificate, index, total, open, onToggle, clone }: { certif
   </div>;
 }
 
-// "View all": a gallery of every certificate in a modal. It is only built when opened,
-// so its images load on demand rather than with the page.
+// "View all": a gallery of every certificate in a modal. It is only built when opened, so its images
+// load on demand rather than with the page. They load straight away once open: lazy loading inside a
+// modal's scroll area is unreliable in Safari and left covers blank.
 function AllCertificates({ certificates }: { certificates: Certificate[] }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [shown, setShown] = useState(false);
@@ -69,7 +72,7 @@ function AllCertificates({ certificates }: { certificates: Certificate[] }) {
         <ul className="cert-grid">
           {certificates.map((certificate, index) => <li className="cert-grid-item" key={index}>
             <div className="cert-grid-media">{certificate.image
-              ? <Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} unoptimized={certificate.image.startsWith('https:')} sizes="(max-width: 640px) 90vw, (max-width: 1000px) 45vw, 340px"/>
+              ? <Image src={certificate.image} alt={`${certificate.title} certificate`} width={1000} height={760} loading="eager" decoding="async" unoptimized/>
               : <Award size={44} strokeWidth={1.2} aria-hidden="true"/>}</div>
             <div className="cert-grid-copy">
               <p className="cert-grid-issuer">{certificate.issuer}</p>
