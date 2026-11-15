@@ -101,7 +101,7 @@ img { max-width: 100%; height: auto; }
 .section-label { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 .wordmark { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; text-decoration: none; letter-spacing: -.01em; color: var(--ink); white-space: nowrap; }
 .wordmark > span:not([class]) { color: var(--accent); }
-.monogram { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; background: linear-gradient(135deg, var(--fill), var(--navy)); color: #fff; font-family: var(--font-serif), Georgia, serif; font-size: 19px; font-weight: 500; box-shadow: inset 0 1px 0 #ffffff40; }
+.signature-logo { flex-shrink: 0; width: auto; height: 36px; aspect-ratio: 146 / 92; color: var(--ink); }
 
 /* Header: a floating frosted bar that stays at the top while scrolling. */
 .navigation { position: sticky; top: 12px; z-index: 40; display: flex; align-items: center; gap: 16px; width: min(1040px, calc(100% - 32px)); height: 60px; margin: 12px auto 0; padding: 0 8px 0 12px; border: 1px solid var(--glass-border); border-radius: 999px; background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%); box-shadow: 0 0 0 1px #14213d0d, 0 8px 24px -16px #14213d40; font-size: 15px; transition: box-shadow .25s, background .25s; }
@@ -179,9 +179,9 @@ html[data-theme="dark"] .hero-scroll::before { box-shadow: inset 0 0 0 2px #ffff
 .project-media { display: block; min-width: 0; overflow: hidden; border-radius: 16px; border: 1px solid #14213d1a; background: #fff; box-shadow: 0 26px 50px -30px #14213d4d; transition: transform .5s cubic-bezier(.2, .7, .2, 1), box-shadow .5s; }
 a.project-media:hover { transform: translateY(-5px); box-shadow: 0 34px 60px -30px #14213d59; }
 .project-media img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; }
-.project-poster { aspect-ratio: 16 / 10; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: clamp(20px, 3vw, 34px); background: linear-gradient(135deg, var(--fill), var(--navy)); color: #fff; border: 0; }
+.project-poster { container-type: inline-size; overflow: hidden; aspect-ratio: 16 / 10; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: clamp(20px, 3vw, 34px); background: linear-gradient(135deg, var(--fill), var(--navy)); color: #fff; border: 0; }
 .project-poster span { font-family: var(--font-sans), sans-serif; font-size: 13px; }
-.project-poster p { font-style: italic; font-size: clamp(46px, 6.4vw, 88px); line-height: .95; letter-spacing: -.03em; overflow-wrap: break-word; }
+.project-poster p { font-style: italic; font-size: clamp(30px, 15cqi, 88px); line-height: .95; letter-spacing: -.03em; overflow-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; padding-bottom: .08em; }
 
 /* Skills */
 .skill-list { display: grid; }
@@ -359,7 +359,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   .container { width: calc(100% - 40px); }
   .navigation { width: calc(100% - 24px); height: 56px; top: 10px; margin-top: 10px; padding: 0 6px 0 8px; }
   .wordmark { font-size: 15px; }
-  .monogram { width: 32px; height: 32px; font-size: 17px; }
+  .signature-logo { height: 32px; }
   .resume-link { min-height: 40px; padding: 0 14px; }
   .hero { grid-template-columns: 1fr; gap: 0; padding: 24px 0 88px; }
   .hero-portrait { order: -1; display: flex; align-items: center; gap: 14px; margin: 0 0 24px; }
@@ -383,7 +383,6 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-i
   .project-actions { margin-top: 8px; }
   .project-media { border-radius: 12px; }
   .project-media img, .project-poster { aspect-ratio: 16 / 9; }
-  .project-poster p { font-size: 46px; }
   /* Phones: the card keeps its width and the details slide up over the cover. */
   .cert-showcase { --cert-h: 420px; --card-w: 260px; --open-w: 260px; }
   .cert-poster span { font-size: 32px; }
@@ -460,3 +459,10 @@ main, footer { overflow-wrap: anywhere; }
 .wordmark { min-width: 0; }
 .wordmark-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hero-portrait figcaption, .hero-copy, .hero-name, .hero-headline, .hero-summary { min-width: 0; overflow-wrap: anywhere; }
+
+/* Footer: the signature logo sits before the copyright line. */
+.footer-brand { display: inline-flex; align-items: center; gap: 10px; }
+.footer-brand .signature-logo { height: 28px; }
+
+/* Very narrow phones: the signature alone carries the brand so the name is never cut off mid-word. */
+@media (max-width: 374px) { .wordmark-name { display: none; } }

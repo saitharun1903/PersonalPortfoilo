@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { ArrowUpRight, Check, Copy, Download, Menu, Moon, Sun, X } from 'lucide-react';
 import type { PortfolioContent, Project } from '../lib/content-schema';
+import Signature from './signature';
 
 // Light/dark switch. The theme lives on <html data-theme>; an inline script in the layout sets it
 // before first paint from the saved choice or the device setting.
@@ -74,7 +75,7 @@ export function Navigation({ profile, sections }: { profile: PortfolioContent['p
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
   return <header className="navigation" data-scrolled={scrolled || undefined}>
-    <a className="wordmark" href="#home" aria-label={`${profile.brand} home`}><span className="monogram" aria-hidden="true">{profile.brand.trim().charAt(0)}</span><span className="wordmark-name">{profile.brand}</span></a>
+    <a className="wordmark" href="#home" aria-label={`${profile.brand} home`}><Signature className="signature-logo"/><span className="wordmark-name">{profile.brand}</span></a>
     <nav id="main-navigation" ref={links} aria-label="Main navigation" className={open ? 'nav-links open' : 'nav-links'}>
       <span className="nav-indicator" ref={indicator} aria-hidden="true"/>
       {(['About', 'Projects', 'Experience', 'Skills', 'Certifications'] as const).filter(label => sections[label.toLowerCase() as keyof typeof sections]).map((label) => <a key={label} href={`#${label.toLowerCase()}`} aria-current={active === label.toLowerCase() ? 'location' : undefined} onClick={() => setOpen(false)}>{label}</a>)}
